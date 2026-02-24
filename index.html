@@ -7,8 +7,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
-:root{--bg-body:#f5f7fb;--bg-card:#ffffff;--bg-soft:#f1f4ff;--accent:#7897ff;--accent-soft:#dde4ff;--accent-strong:#3c57d7;--text-main:#1f2933;--text-muted:#6b7280;--border-soft:#e0e4f0;--green:#34a853;--red:#e15b56}*{box-sizing:border-box;margin:0;padding:0}body{font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg-body);color:var(--text-main);padding:24px}.page{max-width:1080px;margin:0 auto 48px}header{margin-bottom:24px}header h1{font-size:1.9rem;font-weight:700;margin-bottom:4px}header p{font-size:.95rem;color:var(--text-muted)}.pill-row{display:flex;flex-wrap:wrap;gap:8px;margin:4px 0 16px}.pill{padding:4px 10px;border-radius:999px;font-size:.78rem;background:var(--bg-soft);color:var(--text-muted)}.card{background:var(--bg-card);border-radius:12px;border:1px solid var(--border-soft);padding:16px 16px 14px;margin-bottom:16px}.card h2{font-size:1.1rem;margin-bottom:4px}.card small{display:block;font-size:.8rem;color:var(--text-muted);margin-bottom:8px}.card-2col{display:grid;grid-template-columns:1fr 1fr;gap:12px}.big-amount{font-size:1.6rem;font-weight:700;margin:4px 0}.label-muted{font-size:.8rem;color:var(--text-muted)}.highlight-chip{display:inline-flex;align-items:center;gap:4px;font-size:.8rem;padding:2px 8px;border-radius:999px;background:var(--accent-soft);color:var(--accent-strong);margin-top:4px}.period-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}.period-row select,.period-row input[type=number]{border-radius:999px;border:1px solid var(--border-soft);padding:6px 10px;font-size:.85rem;background:#fff}.field{margin-bottom:10px}.field label{display:block;font-size:.8rem;margin-bottom:4px;color:var(--text-muted)}.field input,.field select,.field textarea{width:100%;border-radius:8px;border:1px solid var(--border-soft);padding:8px 10px;font-size:.9rem;background:#fff}.field textarea{min-height:70px;resize:vertical}.field input:focus,.field select:focus,.field textarea:focus{outline:2px solid var(--accent-soft);outline-offset:1px;border-color:var(--accent-strong)}.btn{border-radius:999px;border:none;padding:8px 14px;font-size:.85rem;font-weight:600;background:var(--accent-strong);color:#fff;cursor:pointer}.btn:hover{background:var(--accent)}.btn-ghost{background:var(--bg-soft);color:var(--text-main)}.btn-ghost:hover{background:#e4e7ff}.btn-danger{background:var(--red)}.btn-danger:hover{background:#c54945}.btn-sm{padding:4px 9px;border-radius:999px;font-size:.78rem}.two-cols{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1.1fr);gap:16px}.chart-wrap{display:flex;flex-direction:column;gap:8px}.chart-canvas-wrap{width:100%;max-width:280px;height:200px}.chart-row{display:flex;flex-wrap:wrap;gap:16px}.chart-row div{flex:1 1 220px}.mini-list{margin-top:6px}.mini-item{border-radius:8px;border:1px solid var(--border-soft);padding:6px 8px;font-size:.82rem;display:flex;justify-content:space-between;align-items:center;margin-bottom:4px}.mini-item-main{display:flex;flex-direction:column;gap:1px}.mini-title{font-weight:600}.mini-meta{font-size:.75rem;color:var(--text-muted)}.mini-actions{display:flex;gap:4px;align-items:center;margin-left:8px;flex-shrink:0}.invoice-header-row{display:flex;justify-content:space-between;align-items:baseline;gap:8px}.invoice-name{font-weight:600}.invoice-meta{font-size:.8rem;color:var(--text-muted);margin-top:2px}.months-checklist{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}.month-pill{display:inline-flex;align-items:center;gap:4px;border-radius:999px;padding:3px 8px;background:var(--bg-soft);font-size:.75rem}.month-pill input{margin:0;width:12px;height:12px}.fixed-item-row{display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:8px;border:1px solid var(--border-soft);margin-bottom:4px;font-size:.85rem}.fixed-item-row input[type=checkbox]{width:14px;height:14px}.fixed-text{flex:1}.fixed-text.paid{text-decoration:line-through;color:var(--text-muted);opacity:.7}.notes{font-size:.85rem;color:var(--text-muted)}.loading-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(255,255,255,.8);display:flex;align-items:center;justify-content:center;z-index:9999;font-size:1.1rem;color:var(--accent-strong)}.toast{position:fixed;bottom:24px;right:24px;background:var(--accent-strong);color:#fff;padding:10px 18px;border-radius:8px;font-size:.9rem;z-index:9999;opacity:0;transition:opacity .3s}.toast.show{opacity:1}@media(max-width:768px){.two-cols{grid-template-columns:1fr}.card-2col{grid-template-columns:1fr}body{padding:16px}}
-</style>
+:root{--bg-body:#f5f7fb;--bg-card:#ffffff;--bg-soft:#f1f4ff;--accent:#7897ff;--accent-soft:#dde4ff;--accent-strong:#3c57d7;--text-main:#1f2933;--text-muted:#6b7280;--border-soft:#e0e4f0;--green:#34a853;--red:#e15b56}*{box-sizing:border-box;margin:0;padding:0}body{font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg-body);color:var(--text-main);padding:24px}.page{max-width:1080px;margin:0 auto 48px}header{margin-bottom:24px}header h1{font-size:1.9rem;font-weight:700;margin-bottom:4px}header p{font-size:.95rem;color:var(--text-muted)}.pill-row{display:flex;flex-wrap:wrap;gap:8px;margin:4px 0 16px}.pill{padding:4px 10px;border-radius:999px;font-size:.78rem;background:var(--bg-soft);color:var(--text-muted)}.card{background:var(--bg-card);border-radius:12px;border:1px solid var(--border-soft);padding:16px 16px 14px;margin-bottom:16px}.card h2{font-size:1.1rem;margin-bottom:4px}.card small{display:block;font-size:.8rem;color:var(--text-muted);margin-bottom:8px}.card-2col{display:grid;grid-template-columns:1fr 1fr;gap:12px}.big-amount{font-size:1.6rem;font-weight:700;margin:4px 0}.label-muted{font-size:.8rem;color:var(--text-muted)}.highlight-chip{display:inline-flex;align-items:center;gap:4px;font-size:.8rem;padding:2px 8px;border-radius:999px;background:var(--accent-soft);color:var(--accent-strong);margin-top:4px}.period-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}.period-row select,.period-row input[type=number]{border-radius:999px;border:1px solid var(--border-soft);padding:6px 10px;font-size:.85rem;background:#fff}.field{margin-bottom:10px}.field label{display:block;font-size:.8rem;margin-bottom:4px;color:var(--text-muted)}.field input,.field select,.field textarea{width:100%;border-radius:8px;border:1px solid var(--border-soft);padding:8px 10px;font-size:.9rem;background:#fff}.field textarea{min-height:70px;resize:vertical}.field input:focus,.field select:focus,.field textarea:focus{outline:2px solid var(--accent-soft);outline-offset:1px;border-color:var(--accent-strong)}.btn{border-radius:999px;border:none;padding:8px 14px;font-size:.85rem;font-weight:600;background:var(--accent-strong);color:#fff;cursor:pointer}.btn:hover{background:var(--accent)}.btn-ghost{background:var(--bg-soft);color:var(--text-main)}.btn-ghost:hover{background:#e4e7ff}.btn-danger{background:var(--red)}.btn-danger:hover{background:#c54945}.btn-sm{padding:4px 9px;border-radius:999px;font-size:.78rem}.two-cols{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1.1fr);gap:16px}.chart-wrap{display:flex;flex-direction:column;gap:8px}.chart-canvas-wrap{width:100%;max-width:280px;height:200px}.chart-row{display:flex;flex-wrap:wrap;gap:16px}.chart-row div{flex:1 1 220px}.mini-list{margin-top:6px}.mini-item{border-radius:8px;border:1px solid var(--border-soft);padding:6px 8px;font-size:.82rem;display:flex;justify-content:space-between;align-items:center;margin-bottom:4px}.mini-item-main{display:flex;flex-direction:column;gap:1px}.mini-title{font-weight:600}.mini-meta{font-size:.75rem;color:var(--text-muted)}.mini-actions{display:flex;gap:4px;align-items:center;margin-left:8px;flex-shrink:0}.invoice-header-row{display:flex;justify-content:space-between;align-items:baseline;gap:8px}.invoice-name{font-weight:600}.invoice-meta{font-size:.8rem;color:var(--text-muted);margin-top:2px}.months-checklist{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}.month-pill{display:inline-flex;align-items:center;gap:4px;border-radius:999px;padding:3px 8px;background:var(--bg-soft);font-size:.75rem}.month-pill input{margin:0;width:12px;height:12px}.loading-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(255,255,255,.8);display:flex;align-items:center;justify-content:center;z-index:9999;font-size:1.1rem;color:var(--accent-strong)}.toast{position:fixed;bottom:24px;right:24px;background:var(--accent-strong);color:#fff;padding:10px 18px;border-radius:8px;font-size:.9rem;z-index:9999;opacity:0;transition:opacity .3s}.toast.show{opacity:1}@media(max-width:768px){.two-cols{grid-template-columns:1fr}.card-2col{grid-template-columns:1fr}body{padding:16px}}</style>
 </head>
 <body>
 <div id="loadingOverlay" class="loading-overlay">Carregando dados...</div>
@@ -19,72 +18,104 @@
 <p>Resumo do mês, faturas, débitos e lembretes em um lugar só.</p>
 <div class="pill-row"><span class="pill">Renda e despesas</span><span class="pill">Parcelas e faturas</span><span class="pill">Gastos no mês</span></div>
 </header>
-<section class="card card-2col">
-<div><h2>Renda do mês</h2><small>Salário e extras que entram neste mês.</small><div class="big-amount" id="summaryIncome">R$ 0,00</div><div class="label-muted">Com base nas receitas lançadas.</div></div>
-<div><h2>Despesas do mês</h2><small>Parcelas, assinaturas, débitos e gastos no débito/dinheiro.</small><div class="big-amount" id="summaryExpense">R$ 0,00</div><div class="label-muted">Somando tudo o que saiu.</div></div>
+<section class="card-2col">
+<div class="card"><h2>Renda do mês</h2><small>Salário e extras que entram neste mês.</small><div class="big-amount" id="summaryIncome">R$ 0,00</div><div class="label-muted">Com base nas receitas lançadas.</div></div>
+<div class="card"><h2>Despesas do mês</h2><small>Parcelas, assinaturas, débitos e gastos no débito/dinheiro.</small><div class="big-amount" id="summaryExpense">R$ 0,00</div><div class="label-muted">Somando tudo o que saiu.</div></div>
 </section>
-<section class="card card-2col">
-<div><h2>Saldo do mês</h2><small>Renda - despesas deste mês.</small><div class="big-amount" id="summaryBalance">R$ 0,00</div><div class="highlight-chip"><span>Resultado mensal</span></div></div>
-<div><h2>Resultado do ano</h2><small>Todos os meses somados: receitas - despesas.</small><div class="big-amount" id="summaryYear">R$ 0,00</div><span class="label-muted">Dados em nuvem.</span></div>
+<section class="card-2col">
+<div class="card"><h2>Saldo do mês</h2><small>Renda - despesas deste mês.</small><div class="big-amount" id="summaryBalance">R$ 0,00</div><div class="highlight-chip"><span>Resultado mensal</span></div></div>
+<div class="card"><h2>Resultado do ano</h2><small>Todos os meses somados: receitas - despesas.</small><div class="big-amount" id="summaryYear">R$ 0,00</div><div class="label-muted">Dados em nuvem.</div></div>
 </section>
 <section class="card">
 <h2>Período que você está vendo</h2>
 <small>Mude o mês/ano para ver outros controles que você já lançou.</small>
 <div class="period-row">
-<label>Mês <select id="monthSelect"><option value="0">Janeiro</option><option value="1">Fevereiro</option><option value="2">Março</option><option value="3">Abril</option><option value="4">Maio</option><option value="5">Junho</option><option value="6">Julho</option><option value="7">Agosto</option><option value="8">Setembro</option><option value="9">Outubro</option><option value="10">Novembro</option><option value="11">Dezembro</option></select></label>
-<label>Ano <select id="yearSelect"></select></label>
-<button class="btn btn-ghost" onclick="document.getElementById('monthSelect').value=new Date().getMonth();document.getElementById('yearSelect').value=new Date().getFullYear();changeMonth()">Mês atual</button>
+<label>Mês</label>
+<select id="monthSelect">
+<option value="0">Janeiro</option><option value="1">Fevereiro</option><option value="2">Março</option><option value="3">Abril</option><option value="4">Maio</option><option value="5">Junho</option><option value="6">Julho</option><option value="7">Agosto</option><option value="8">Setembro</option><option value="9">Outubro</option><option value="10">Novembro</option><option value="11">Dezembro</option>
+</select>
+<label>Ano</label>
+<select id="yearSelect"></select>
+<button class="btn btn-sm btn-ghost" onclick="goToCurrentMonth()">Mês atual</button>
 </div>
-<div class="highlight-chip" style="margin-top:8px"><span id="periodLabel">...</span></div>
+<div class="highlight-chip" id="periodLabel">...</div>
 </section>
 <div class="two-cols">
+<div class="chart-wrap">
 <section class="card">
-<h2>Visão rápida do mês</h2><small>Receitas, despesas e distribuição por categoria.</small>
+<h2>Visão rápida do mês</h2>
+<small>Receitas, despesas e distribuição por categoria.</small>
 <div class="chart-row">
-<div><strong>Receitas por categoria</strong><div class="chart-canvas-wrap"><canvas id="incomeChart"></canvas></div><div class="label-muted">Total de receitas no mês</div><div class="big-amount" id="totalIncome">R$ 0,00</div></div>
-<div><strong>Despesas por categoria</strong><div class="chart-canvas-wrap"><canvas id="expenseChart"></canvas></div><div class="label-muted">Total de despesas no mês</div><div class="big-amount" id="totalExpense">R$ 0,00</div></div>
+<div>
+<p><strong>Receitas por categoria</strong></p>
+<div class="chart-canvas-wrap"><canvas id="incomeChart"></canvas></div>
+<p class="mini-meta">Total de receitas no mês</p>
+<div class="big-amount" id="totalIncome" style="font-size:1.2rem">R$ 0,00</div>
+</div>
+<div>
+<p><strong>Despesas por categoria</strong></p>
+<div class="chart-canvas-wrap"><canvas id="expenseChart"></canvas></div>
+<p class="mini-meta">Total de despesas no mês</p>
+<div class="big-amount" id="totalExpense" style="font-size:1.2rem">R$ 0,00</div>
+</div>
 </div>
 </section>
-<div>
+</div>
+<div class="chart-wrap">
 <section class="card">
-<h2>Saldo do mês anterior</h2><small>Quanto sobrou ou faltou no mês anterior.</small>
+<h2>Saldo do mês anterior</h2>
+<small>Quanto sobrou ou faltou no mês anterior.</small>
 <div class="big-amount" id="previousBalance">R$ 0,00</div>
-<div class="field" style="margin-top:8px"><label>Editar saldo anterior</label><input type="number" id="previousBalanceInput" step="0.01" placeholder="0,00"></div>
+<div class="field">
+<label>Editar saldo anterior</label>
+<input type="number" id="previousBalanceInput" step="0.01" placeholder="0,00">
+</div>
 <button class="btn" onclick="savePreviousBalance()">Salvar saldo anterior</button>
 </section>
 <section class="card">
-<h2>Saldo atual do mês</h2><small>Saldo considerando receitas e despesas deste período.</small>
+<h2>Saldo atual do mês</h2>
+<small>Saldo considerando receitas e despesas deste período.</small>
 <div class="big-amount" id="currentBalance">R$ 0,00</div>
-<span class="label-muted">Atualiza sempre que você lança algo novo.</span>
+<div class="highlight-chip">Atualiza sempre que você lança algo novo.</div>
 </section>
 </div>
 </div>
 <section class="card">
 <h2>Receitas e despesas</h2>
 <small>Lançamentos rápidos do que entrou e saiu neste mês.</small>
-<div class="two-cols">
+<div class="two-cols" style="margin-top:12px">
 <div>
-<h3 style="margin-bottom:8px">Receita</h3>
+<h3>Receita</h3>
 <div class="field"><label>Título</label><input type="text" id="incomeTitle" placeholder="Ex. Salário, freela, reembolso"></div>
 <div class="field"><label>Valor R$</label><input type="number" id="incomeValue" step="0.01" placeholder="0,00"></div>
-<div class="field"><label>Categoria</label><select id="incomeCategory"><option value="Salário">Salário</option><option value="Comissão">Comissão</option><option value="Pagamentos">Pagamentos</option><option value="Rendimentos/Investimentos">Rendimentos/Investimentos</option><option value="Outros">Outros</option></select></div>
+<div class="field"><label>Categoria</label>
+<select id="incomeCategory">
+<option value="Salário">Salário</option><option value="Comissão">Comissão</option><option value="Pagamentos">Pagamentos</option><option value="Rendimentos/Investimentos">Rendimentos/Investimentos</option><option value="Outros">Outros</option>
+</select>
+</div>
 <button class="btn" onclick="addIncome()">Adicionar receita</button>
-<div class="mini-list" style="margin-top:8px"><strong>&#218;ltimas receitas (máx. 5)</strong><div id="incomeHistoryList"></div></div>
+<p style="margin-top:12px"><strong>Últimas receitas (máx. 5)</strong></p>
+<div id="incomeHistoryList" class="mini-list"></div>
 </div>
 <div>
-<h3 style="margin-bottom:8px">Despesa</h3>
+<h3>Despesa</h3>
 <div class="field"><label>Título</label><input type="text" id="expenseTitle" placeholder="Ex. Mercado, aluguel, Uber"></div>
 <div class="field"><label>Valor R$</label><input type="number" id="expenseValue" step="0.01" placeholder="0,00"></div>
-<div class="field"><label>Categoria</label><select id="expenseCategory"><option value="Aluguel">Aluguel</option><option value="Supermercado">Supermercado</option><option value="Saúde">Saúde</option><option value="Contas/Assinaturas">Contas/Assinaturas</option><option value="MEI">MEI</option><option value="Comida">Comida</option><option value="Farmácia">Farmácia</option><option value="Lazer">Lazer</option><option value="PCPC">PCPC</option><option value="Presentes">Presentes</option><option value="Roupas">Roupas</option><option value="Serviços">Serviços</option><option value="Transporte">Transporte</option><option value="Outros">Outros</option></select></div>
+<div class="field"><label>Categoria</label>
+<select id="expenseCategory">
+<option value="Aluguel">Aluguel</option><option value="Supermercado">Supermercado</option><option value="Saúde">Saúde</option><option value="Contas/Assinaturas">Contas/Assinaturas</option><option value="MEI">MEI</option><option value="Comida">Comida</option><option value="Farmácia">Farmácia</option><option value="Lazer">Lazer</option><option value="PCPC">PCPC</option><option value="Presentes">Presentes</option><option value="Roupas">Roupas</option><option value="Serviços">Serviços</option><option value="Transporte">Transporte</option><option value="Outros">Outros</option>
+</select>
+</div>
 <button class="btn" onclick="addExpense()">Adicionar despesa</button>
-<div class="mini-list" style="margin-top:8px"><strong>&#218;ltimas despesas (máx. 5)</strong><div id="expenseHistoryList"></div></div>
+<p style="margin-top:12px"><strong>Últimas despesas (máx. 5)</strong></p>
+<div id="expenseHistoryList" class="mini-list"></div>
 </div>
 </div>
 </section>
 <section class="card">
 <h2>Faturas e parcelamentos</h2>
 <small>O que você parcelou, quanto cai por mês e até quando vai.</small>
-<div class="two-cols">
+<div class="two-cols" style="margin-top:12px">
 <div>
 <div class="field"><label>Nome da fatura ou item</label><input type="text" id="invoiceName" placeholder="Ex. Notebook, iPhone, curso"></div>
 <div class="field"><label>Valor total R$</label><input type="number" id="invoiceValue" step="0.01" placeholder="0,00"></div>
@@ -94,12 +125,11 @@
 <p class="notes" style="margin-top:8px">Se colocar juros, o sistema usa juros simples.</p>
 </div>
 <div>
-<strong>Faturas cadastradas</strong>
+<p><strong>Faturas cadastradas</strong></p>
 <div id="invoiceList" style="margin-top:8px"></div>
 </div>
 </div>
 </section>
-
 </div>
 <script>
 const SUPABASE_URL='https://yjmbgtknwfcvntiqngxd.supabase.co';
@@ -110,270 +140,245 @@ let currentMonth=new Date().getMonth();
 let currentYear=new Date().getFullYear();
 let incomeChart,expenseChart;
 let localReceitas=[],localDespesas=[],localFaturas=[];
+
 function showLoading(v){document.getElementById('loadingOverlay').style.display=v?'flex':'none';}
 function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
 function formatCurrency(v){const n=Number(v)||0;return 'R$ '+n.toFixed(2).replace('.',',').replace(/\B(?=(\d{3})+(?!\d))/g,'.');}
+
 const incomeCtx=document.getElementById('incomeChart').getContext('2d');
 const expenseCtx=document.getElementById('expenseChart').getContext('2d');
 const chartOptions={responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom'}}};
 incomeChart=new Chart(incomeCtx,{type:'doughnut',data:{labels:[],datasets:[{data:[],backgroundColor:['#5FBA7D','#7AB8CC','#A8D8EA','#FFD93D','#A0AEC0','#ECC94B']}]},options:chartOptions});
 expenseChart=new Chart(expenseCtx,{type:'doughnut',data:{labels:[],datasets:[{data:[],backgroundColor:['#E67E78','#FF8C94','#FFA69E','#FFBCB5','#FFD6CC','#D4A5A5','#C08497','#9B7E9D','#7A6F9B','#6B5B95','#8884D8','#82CA9D','#FFB7B2','#C9ADA7','#CBD5E0']}]},options:chartOptions});
-async function loadData(){
-showLoading(true);
-try{
-const [rRes,dRes,fRes]=await Promise.all([
-sb.from('receitas').select('*').eq('user_id',USER_ID).eq('mes',currentMonth).eq('ano',currentYear).order('created_at',{ascending:false}),
-sb.from('despesas').select('*').eq('user_id',USER_ID).eq('mes',currentMonth).eq('ano',currentYear).order('created_at',{ascending:false}),
-sb.from('faturas').select('*').eq('user_id',USER_ID).order('created_at',{ascending:false}))];
-localReceitas=rRes.data||[];
-localDespesas=dRes.data||[];
-localFaturas=fRes.data||[];
-updateAll();
-}catch(e){showToast('Erro ao carregar dados: '+e.message);}
-showLoading(false);
-}
-async function loadMesConfig(){
-const {data}=await sb.from('mes_config').select('*').eq('user_id',USER_ID).eq('mes',currentMonth).eq('ano',currentYear).single();
-if(data){
-document.getElementById('previousBalance').textContent=formatCurrency(data.saldo_anterior);
-document.getElementById('previousBalanceInput').value=data.saldo_anterior||0;
-}else{
-document.getElementById('previousBalance').textContent=formatCurrency(0);
-document.getElementById('previousBalanceInput').value=0;
-}
-}
-function updateAll(){updateCharts();updateBalance();renderIncomeHistory();renderExpenseHistory();renderInvoices();}
-function updateCharts(){
-const incomeMap={},expenseMap={};
-localReceitas.forEach(r=>{incomeMap[r.categoria]=(incomeMap[r.categoria]||0)+Number(r.valor);});
-localDespesas.forEach(d=>{expenseMap[d.categoria]=(expenseMap[d.categoria]||0)+Number(d.valor);});
-incomeChart.data.labels=Object.keys(incomeMap);
-incomeChart.data.datasets[0].data=Object.values(incomeMap);
-incomeChart.update();
-expenseChart.data.labels=Object.keys(expenseMap);
-expenseChart.data.datasets[0].data=Object.values(expenseMap);
-expenseChart.update();
-const ti=Object.values(incomeMap).reduce((a,b)=>a+b,0);
-const te=Object.values(expenseMap).reduce((a,b)=>a+b,0);
-document.getElementById('totalIncome').textContent=formatCurrency(ti);
-document.getElementById('totalExpense').textContent=formatCurrency(te);
-}
-async function updateBalance(){
-const {data:cfg}=await sb.from('mes_config').select('saldo_anterior').eq('user_id',USER_ID).eq('mes',currentMonth).eq('ano',currentYear).single();
-const prev=cfg?Number(cfg.saldo_anterior):0;
-const ti=localReceitas.reduce((a,r)=>a+Number(r.valor),0);
-const te=localDespesas.reduce((a,d)=>a+Number(d.valor),0);
-const bal=prev+ti-te;
-document.getElementById('summaryIncome').textContent=formatCurrency(ti);
-document.getElementById('summaryExpense').textContent=formatCurrency(te);
-document.getElementById('summaryBalance').textContent=formatCurrency(bal);
-document.getElementById('currentBalance').textContent=formatCurrency(bal);
-await computeYearTotal();
-}
-async function computeYearTotal(){
-const {data}=await sb.from('mes_config').select('mes,saldo_anterior').eq('user_id',USER_ID).eq('ano',currentYear);
-const {data:recs}=await sb.from('receitas').select('mes,valor').eq('user_id',USER_ID).eq('ano',currentYear);
-const {data:desps}=await sb.from('despesas').select('mes,valor').eq('user_id',USER_ID).eq('ano',currentYear);
-let total=0;
-for(let m=0;m<12;m++){
-const cfg=(data||[]).find(x=>x.mes===m);
-const prev=cfg?Number(cfg.saldo_anterior):0;
-const ti=(recs||[]).filter(x=>x.mes===m).reduce((a,r)=>a+Number(r.valor),0);
-const te=(desps||[]).filter(x=>x.mes===m).reduce((a,d)=>a+Number(d.valor),0);
-total+=prev+ti-te;
-}
-document.getElementById('summaryYear').textContent=formatCurrency(total);
-}
-async function addIncome(){
-const title=document.getElementById('incomeTitle').value.trim();
-const value=parseFloat(document.getElementById('incomeValue').value);
-const cat=document.getElementById('incomeCategory').value;
-if(!title){alert('Digite um título para a receita.');return;}
-if(isNaN(value)||value<=0){alert('Digite um valor de receita válido.');return;}
-showLoading(true);
-const {data,error}=await sb.from('receitas').insert({user_id:USER_ID,titulo:title,valor:value,categoria:cat,mes:currentMonth,ano:currentYear}).select().single();
-if(error){showToast('Erro: '+error.message);showLoading(false);return;}
-localReceitas.unshift(data);
-document.getElementById('incomeTitle').value='';
-document.getElementById('incomeValue').value='';
-updateAll();
-showToast('Receita adicionada!');
-showLoading(false);
-}
-async function addExpense(){
-const title=document.getElementById('expenseTitle').value.trim();
-const value=parseFloat(document.getElementById('expenseValue').value);
-const cat=document.getElementById('expenseCategory').value;
-if(!title){alert('Digite um título para a despesa.');return;}
-if(isNaN(value)||value<=0){alert('Digite um valor de despesa válido.');return;}
-showLoading(true);
-const {data,error}=await sb.from('despesas').insert({user_id:USER_ID,titulo:title,valor:value,categoria:cat,mes:currentMonth,ano:currentYear}).select().single();
-if(error){showToast('Erro: '+error.message);showLoading(false);return;}
-localDespesas.unshift(data);
-document.getElementById('expenseTitle').value='';
-document.getElementById('expenseValue').value='';
-updateAll();
-showToast('Despesa adicionada!');
-showLoading(false);
-}
-async function deleteIncome(id){
-if(!confirm('Excluir esta receita?'))return;
-await sb.from('receitas').delete().eq('id',id);
-localReceitas=localReceitas.filter(r=>r.id!==id);
-updateAll();
-showToast('Receita excluída.');
-}
-async function deleteExpense(id){
-if(!confirm('Excluir esta despesa?'))return;
-await sb.from('despesas').delete().eq('id',id);
-localDespesas=localDespesas.filter(d=>d.id!==id);
-updateAll();
-showToast('Despesa excluída.');
-}
-async function editIncome(id){
-const item=localReceitas.find(r=>r.id===id);if(!item)return;
-const newTitle=prompt('Novo título',item.titulo);
-const newValStr=prompt('Novo valor',item.valor);
-const newVal=parseFloat(newValStr);
-if(!newTitle||isNaN(newVal)||newVal<=0)return;
-await sb.from('receitas').update({titulo:newTitle,valor:newVal}).eq('id',id);
-item.titulo=newTitle;item.valor=newVal;
-updateAll();showToast('Receita atualizada.');
-}
-async function editExpense(id){
-const item=localDespesas.find(d=>d.id===id);if(!item)return;
-const newTitle=prompt('Novo título',item.titulo);
-const newValStr=prompt('Novo valor',item.valor);
-const newVal=parseFloat(newValStr);
-if(!newTitle||isNaN(newVal)||newVal<=0)return;
-await sb.from('despesas').update({titulo:newTitle,valor:newVal}).eq('id',id);
-item.titulo=newTitle;item.valor=newVal;
-updateAll();showToast('Despesa atualizada.');
-}
-function renderIncomeHistory(){
-const list=document.getElementById('incomeHistoryList');
-const items=localReceitas.slice(0,5);
-if(!items.length){list.innerHTML='<p class="notes">Nenhuma receita lançada ainda.</p>';return;}
-list.innerHTML=items.map(item=>`<div class="mini-item"><div class="mini-item-main"><span class="mini-title">${item.titulo}</span><span class="mini-meta">${formatCurrency(item.valor)} &bull; ${item.categoria}</span></div><div class="mini-actions"><button class="btn btn-sm btn-ghost" onclick="editIncome(${item.id})">Editar</button><button class="btn btn-sm btn-danger" onclick="deleteIncome(${item.id})">Excluir</button></div></div>`).join('');
-}
-function renderExpenseHistory(){
-const list=document.getElementById('expenseHistoryList');
-const items=localDespesas.slice(0,5);
-if(!items.length){list.innerHTML='<p class="notes">Nenhuma despesa lançada ainda.</p>';return;}
-list.innerHTML=items.map(item=>`<div class="mini-item"><div class="mini-item-main"><span class="mini-title">${item.titulo}</span><span class="mini-meta">${formatCurrency(item.valor)} &bull; ${item.categoria}</span></div><div class="mini-actions"><button class="btn btn-sm btn-ghost" onclick="editExpense(${item.id})">Editar</button><button class="btn btn-sm btn-danger" onclick="deleteExpense(${item.id})">Excluir</button></div></div>`).join('');
-}
-async function addInvoice(){
-const name=document.getElementById('invoiceName').value.trim();
-const value=parseFloat(document.getElementById('invoiceValue').value);
-const installments=parseInt(document.getElementById('invoiceInstallments').value);
-const interest=parseFloat(document.getElementById('invoiceInterest').value)||0;
-if(!name||isNaN(value)||value<=0||isNaN(installments)||installments<1){alert('Preencha nome, valor e número de parcelas.');return;}
-const monthlyBase=value/installments;
-const jurosTotal=value*(interest/100)*installments;
-const totalWithInterest=value+jurosTotal;
-const monthlyWithInterest=interest>0?totalWithInterest/installments:monthlyBase;
-const now=new Date();
-const months=[];
-for(let i=0;i<installments;i++){
-const mDate=new Date(now.getFullYear(),now.getMonth()+i,1);
-months.push({date:mDate.toISOString(),paid:false,label:mDate.toLocaleDateString('pt-BR',{month:'short',year:'numeric'})});
-}
-const finalMonth=new Date(months[months.length-1].date).toLocaleDateString('pt-BR',{month:'long',year:'numeric'});
-showLoading(true);
-const {data,error}=await sb.from('faturas').insert({user_id:USER_ID,nome:name,valor:value,parcelas:installments,juros:interest,total_com_juros:totalWithInterest,valor_mensal:monthlyWithInterest,mes_final:finalMonth,meses_status:months}).select().single();
-if(error){showToast('Erro: '+error.message);showLoading(false);return;}
-localFaturas.push(data);
-document.getElementById('invoiceName').value='';
-document.getElementById('invoiceValue').value='';
-document.getElementById('invoiceInstallments').value='';
-document.getElementById('invoiceInterest').value='';
-renderInvoices();showToast('Fatura adicionada!');showLoading(false);
-}
-function renderInvoices(){
-const container=document.getElementById('invoiceList');
-if(!localFaturas.length){container.innerHTML='<p class="notes">Nenhuma fatura cadastrada ainda.</p>';return;}
-container.innerHTML=localFaturas.map(inv=>{
-const months=inv.meses_status||[];
-return `<div class="card" style="margin-bottom:8px"><div class="invoice-header-row"><div><div class="invoice-name">${inv.nome}</div><div class="invoice-meta">Total: ${formatCurrency(inv.valor)} ${inv.juros>0?'(Juros '+inv.juros.toFixed(2)+'%/mês)':'(Sem juros)'}</div><div class="invoice-meta">${inv.parcelas}x de ${formatCurrency(inv.valor_mensal)} &mdash; Termina em ${inv.mes_final}</div></div><button class="btn btn-sm btn-danger" onclick="deleteInvoice(${inv.id})">Excluir</button></div><div class="months-checklist">${months.map((m,idx)=>`<label class="month-pill"><input type="checkbox" ${m.paid?'checked':''} onchange="toggleMonthPaid(${inv.id},${idx})"><span>${m.label}</span></label>`).join('')}</div></div>`;
-}).join('');
-}
-async function toggleMonthPaid(invoiceId,monthIndex){
-const inv=localFaturas.find(i=>i.id===invoiceId);if(!inv)return;
-const months=[...(inv.meses_status||[])];
-months[monthIndex]={...months[monthIndex],paid:!months[monthIndex].paid};
-await sb.from('faturas').update({meses_status:months}).eq('id',invoiceId);
-inv.meses_status=months;
-renderInvoices();
-}
-async function deleteInvoice(id){
-if(!confirm('Excluir esta fatura?'))return;
-await sb.from('faturas').delete().eq('id',id);
-localFaturas=localFaturas.filter(i=>i.id!==id);
-renderInvoices();showToast('Fatura excluída.');
-}
-async function addFixedPayment(){
-const text=document.getElementById('fixedPaymentText').value.trim();
-if(!text){alert('Descreva o pagamento fixo.');return;}
-showLoading(true);
-const {data,error}=await sb.from('pagamentos_fixos').insert({user_id:USER_ID,texto:text,pago:false}).select().single();
-if(error){showToast('Erro: '+error.message);showLoading(false);return;}
-localFixos.push(data);
-document.getElementById('fixedPaymentText').value='';
-showToast('Pagamento fixo adicionado!');showLoading(false);
-}
-async function toggleFixedPaid(id){
-const item=localFixos.find(p=>p.id===id);if(!item)return;
-item.pago=!item.pago;
-await sb.from('pagamentos_fixos').update({pago:item.pago}).eq('id',id);
 
+async function loadData(){
+    showLoading(true);
+    try{
+        const [rRes,dRes,fRes,cRes]=await Promise.all([
+            sb.from('receitas').select('*').eq('user_id',USER_ID).eq('mes',currentMonth).eq('ano',currentYear).order('created_at',{ascending:false}),
+            sb.from('despesas').select('*').eq('user_id',USER_ID).eq('mes',currentMonth).eq('ano',currentYear).order('created_at',{ascending:false}),
+            sb.from('faturas').select('*').eq('user_id',USER_ID).order('created_at',{ascending:false}),
+            sb.from('mes_config').select('*').eq('user_id',USER_ID).eq('mes',currentMonth).eq('ano',currentYear).single()
+        ]);
+        localReceitas=rRes.data||[];
+        localDespesas=dRes.data||[];
+        localFaturas=fRes.data||[];
+        
+        if(cRes.data){
+            document.getElementById('previousBalance').textContent=formatCurrency(cRes.data.saldo_anterior);
+            document.getElementById('previousBalanceInput').value=cRes.data.saldo_anterior||0;
+        }else{
+            document.getElementById('previousBalance').textContent=formatCurrency(0);
+            document.getElementById('previousBalanceInput').value=0;
+        }
+        
+        updateAll();
+    }catch(e){console.error(e);showToast('Erro ao carregar dados.');}
+    showLoading(false);
 }
-async function deleteFixedPayment(id){
-if(!confirm('Excluir?'))return;
-await sb.from('pagamentos_fixos').delete().eq('id',id);
-localFixos=localFixos.filter(p=>p.id!==id);
-showToast('Removido.');
+
+function updateAll(){updateCharts();updateBalance();renderIncomeHistory();renderExpenseHistory();renderInvoices();}
+
+function updateCharts(){
+    const incomeMap={},expenseMap={};
+    localReceitas.forEach(r=>{incomeMap[r.categoria]=(incomeMap[r.categoria]||0)+Number(r.valor);});
+    localDespesas.forEach(d=>{expenseMap[d.categoria]=(expenseMap[d.categoria]||0)+Number(d.valor);});
+    incomeChart.data.labels=Object.keys(incomeMap);
+    incomeChart.data.datasets[0].data=Object.values(incomeMap);
+    incomeChart.update();
+    expenseChart.data.labels=Object.keys(expenseMap);
+    expenseChart.data.datasets[0].data=Object.values(expenseMap);
+    expenseChart.update();
+    const ti=Object.values(incomeMap).reduce((a,b)=>a+b,0);
+    const te=Object.values(expenseMap).reduce((a,b)=>a+b,0);
+    document.getElementById('totalIncome').textContent=formatCurrency(ti);
+    document.getElementById('totalExpense').textContent=formatCurrency(te);
 }
-function renderFixedPayments(){
-const container=document.getElementById('fixedList');
-if(!localFixos.length){container.innerHTML='<p class="notes">Nenhum pagamento fixo cadastrado.</p>';return;}
-container.innerHTML=localFixos.map(p=>`<div class="fixed-item-row"><input type="checkbox" ${p.pago?'checked':''} onchange="toggleFixedPaid(${p.id})"><span class="fixed-text${p.pago?' paid':''}">${p.texto}</span><button class="btn btn-sm btn-danger" onclick="deleteFixedPayment(${p.id})">Excluir</button></div>`).join('');
+
+async function updateBalance(){
+    const prev=parseFloat(document.getElementById('previousBalanceInput').value)||0;
+    const ti=localReceitas.reduce((a,r)=>a+Number(r.valor),0);
+    const te=localDespesas.reduce((a,d)=>a+Number(d.valor),0);
+    const bal=prev+ti-te;
+    document.getElementById('summaryIncome').textContent=formatCurrency(ti);
+    document.getElementById('summaryExpense').textContent=formatCurrency(te);
+    document.getElementById('summaryBalance').textContent=formatCurrency(bal);
+    document.getElementById('currentBalance').textContent=formatCurrency(bal);
+    computeYearTotal();
 }
+
+async function computeYearTotal(){
+    try {
+        const {data:cfgAll}=await sb.from('mes_config').select('mes,saldo_anterior').eq('user_id',USER_ID).eq('ano',currentYear);
+        const {data:recsAll}=await sb.from('receitas').select('mes,valor').eq('user_id',USER_ID).eq('ano',currentYear);
+        const {data:despsAll}=await sb.from('despesas').select('mes,valor').eq('user_id',USER_ID).eq('ano',currentYear);
+        let total=0;
+        for(let m=0;m<12;m++){
+            const cfg=(cfgAll||[]).find(x=>x.mes===m);
+            const prev=cfg?Number(cfg.saldo_anterior):0;
+            const ti=(recsAll||[]).filter(x=>x.mes===m).reduce((a,r)=>a+Number(r.valor),0);
+            const te=(despsAll||[]).filter(x=>x.mes===m).reduce((a,d)=>a+Number(d.valor),0);
+            total+=(prev+ti-te);
+        }
+        document.getElementById('summaryYear').textContent=formatCurrency(total);
+    } catch(e){console.error(e);}
+}
+
+async function addIncome(){
+    const title=document.getElementById('incomeTitle').value.trim();
+    const value=parseFloat(document.getElementById('incomeValue').value);
+    const cat=document.getElementById('incomeCategory').value;
+    if(!title||isNaN(value)||value<=0){alert('Dados inválidos.');return;}
+    showLoading(true);
+    const {data,error}=await sb.from('receitas').insert({user_id:USER_ID,titulo:title,valor:value,categoria:cat,mes:currentMonth,ano:currentYear}).select().single();
+    if(error){showToast('Erro ao salvar.');showLoading(false);return;}
+    localReceitas.unshift(data);
+    document.getElementById('incomeTitle').value='';
+    document.getElementById('incomeValue').value='';
+    updateAll();
+    showToast('Receita adicionada!');
+    showLoading(false);
+}
+
+async function addExpense(){
+    const title=document.getElementById('expenseTitle').value.trim();
+    const value=parseFloat(document.getElementById('expenseValue').value);
+    const cat=document.getElementById('expenseCategory').value;
+    if(!title||isNaN(value)||value<=0){alert('Dados inválidos.');return;}
+    showLoading(true);
+    const {data,error}=await sb.from('despesas').insert({user_id:USER_ID,titulo:title,valor:value,categoria:cat,mes:currentMonth,ano:currentYear}).select().single();
+    if(error){showToast('Erro ao salvar.');showLoading(false);return;}
+    localDespesas.unshift(data);
+    document.getElementById('expenseTitle').value='';
+    document.getElementById('expenseValue').value='';
+    updateAll();
+    showToast('Despesa adicionada!');
+    showLoading(false);
+}
+
+async function deleteIncome(id){
+    if(!confirm('Excluir?'))return;
+    await sb.from('receitas').delete().eq('id',id);
+    localReceitas=localReceitas.filter(r=>r.id!==id);
+    updateAll();
+}
+
+async function deleteExpense(id){
+    if(!confirm('Excluir?'))return;
+    await sb.from('despesas').delete().eq('id',id);
+    localDespesas=localDespesas.filter(d=>d.id!==id);
+    updateAll();
+}
+
+function renderIncomeHistory(){
+    const list=document.getElementById('incomeHistoryList');
+    const items=localReceitas.slice(0,5);
+    if(!items.length){list.innerHTML='<p class="notes">Nenhuma receita.</p>';return;}
+    list.innerHTML=items.map(item=>`<div class="mini-item"><div class="mini-item-main"><span class="mini-title">${item.titulo}</span><span class="mini-meta">${formatCurrency(item.valor)} &bull; ${item.categoria}</span></div><div class="mini-actions"><button class="btn btn-sm btn-danger" onclick="deleteIncome(${item.id})">Excluir</button></div></div>`).join('');
+}
+
+function renderExpenseHistory(){
+    const list=document.getElementById('expenseHistoryList');
+    const items=localDespesas.slice(0,5);
+    if(!items.length){list.innerHTML='<p class="notes">Nenhuma despesa.</p>';return;}
+    list.innerHTML=items.map(item=>`<div class="mini-item"><div class="mini-item-main"><span class="mini-title">${item.titulo}</span><span class="mini-meta">${formatCurrency(item.valor)} &bull; ${item.categoria}</span></div><div class="mini-actions"><button class="btn btn-sm btn-danger" onclick="deleteExpense(${item.id})">Excluir</button></div></div>`).join('');
+}
+
+async function addInvoice(){
+    const name=document.getElementById('invoiceName').value.trim();
+    const value=parseFloat(document.getElementById('invoiceValue').value);
+    const installments=parseInt(document.getElementById('invoiceInstallments').value);
+    const interest=parseFloat(document.getElementById('invoiceInterest').value)||0;
+    if(!name||isNaN(value)||value<=0||isNaN(installments)||installments<1){alert('Preencha os campos.');return;}
+    const monthlyBase=value/installments;
+    const jurosTotal=value*(interest/100)*installments;
+    const totalWithInterest=value+jurosTotal;
+    const monthlyWithInterest=interest>0?totalWithInterest/installments:monthlyBase;
+    const now=new Date();
+    const months=[];
+    for(let i=0;i<installments;i++){
+        const mDate=new Date(now.getFullYear(),now.getMonth()+i,1);
+        months.push({date:mDate.toISOString(),paid:false,label:mDate.toLocaleDateString('pt-BR',{month:'short',year:'numeric'})});
+    }
+    const finalMonth=new Date(months[months.length-1].date).toLocaleDateString('pt-BR',{month:'long',year:'numeric'});
+    showLoading(true);
+    const {data,error}=await sb.from('faturas').insert({user_id:USER_ID,nome:name,valor:value,parcelas:installments,juros:interest,total_com_juros:totalWithInterest,valor_mensal:monthlyWithInterest,mes_final:finalMonth,meses_status:months}).select().single();
+    if(error){showToast('Erro.');showLoading(false);return;}
+    localFaturas.push(data);
+    document.getElementById('invoiceName').value=''; document.getElementById('invoiceValue').value=''; document.getElementById('invoiceInstallments').value=''; document.getElementById('invoiceInterest').value='';
+    renderInvoices(); showToast('Fatura adicionada!'); showLoading(false);
+}
+
+function renderInvoices(){
+    const container=document.getElementById('invoiceList');
+    if(!localFaturas.length){container.innerHTML='<p class="notes">Nenhuma fatura.</p>';return;}
+    container.innerHTML=localFaturas.map(inv=>{
+        const months=inv.meses_status||[];
+        return `<div class="card" style="margin-bottom:8px"><div class="invoice-header-row"><div><div class="invoice-name">${inv.nome}</div><div class="invoice-meta">${inv.parcelas}x de ${formatCurrency(inv.valor_mensal)}</div></div><button class="btn btn-sm btn-danger" onclick="deleteInvoice(${inv.id})">Excluir</button></div><div class="months-checklist">${months.map((m,idx)=>`<label class="month-pill"><input type="checkbox" ${m.paid?'checked':''} onchange="toggleMonthPaid(${inv.id},${idx})"><span>${m.label}</span></label>`).join('')}</div></div>`;
+    }).join('');
+}
+
+async function toggleMonthPaid(invoiceId,monthIndex){
+    const inv=localFaturas.find(i=>i.id===invoiceId);if(!inv)return;
+    const months=[...(inv.meses_status||[])];
+    months[monthIndex]={...months[monthIndex],paid:!months[monthIndex].paid};
+    await sb.from('faturas').update({meses_status:months}).eq('id',invoiceId);
+    inv.meses_status=months;
+    renderInvoices();
+}
+
+async function deleteInvoice(id){
+    if(!confirm('Excluir?'))return;
+    await sb.from('faturas').delete().eq('id',id);
+    localFaturas=localFaturas.filter(i=>i.id!==id);
+    renderInvoices();
+}
+
 async function savePreviousBalance(){
-const value=parseFloat(document.getElementById('previousBalanceInput').value);
-if(isNaN(value))return;
-showLoading(true);
-await sb.from('mes_config').upsert({user_id:USER_ID,mes:currentMonth,ano:currentYear,saldo_anterior:value},{onConflict:'user_id,mes,ano'});
-document.getElementById('previousBalance').textContent=formatCurrency(value);
-await updateBalance();
-showToast('Saldo anterior salvo!');showLoading(false);
+    const value=parseFloat(document.getElementById('previousBalanceInput').value);
+    if(isNaN(value))return;
+    showLoading(true);
+    await sb.from('mes_config').upsert({user_id:USER_ID,mes:currentMonth,ano:currentYear,saldo_anterior:value},{onConflict:'user_id,mes,ano'});
+    document.getElementById('previousBalance').textContent=formatCurrency(value);
+    await updateBalance();
+    showToast('Saldo salvo!');
+    showLoading(false);
 }
+
 function initializeYearSelector(){
-const yearSelect=document.getElementById('yearSelect');
-const yearNow=new Date().getFullYear();
-for(let y=yearNow-2;y<=yearNow+5;y++){
-const opt=document.createElement('option');
-opt.value=y;opt.textContent=y;
-if(y===yearNow)opt.selected=true;
-yearSelect.appendChild(opt);
+    const yearSelect=document.getElementById('yearSelect');
+    const yearNow=new Date().getFullYear();
+    for(let y=yearNow-2;y<=yearNow+5;y++){
+        const opt=document.createElement('option'); opt.value=y; opt.textContent=y;
+        if(y===yearNow)opt.selected=true;
+        yearSelect.appendChild(opt);
+    }
 }
-}
-function initializeMonthSelector(){
-document.getElementById('monthSelect').value=currentMonth;
-}
+
 function updatePeriodLabel(){
-const monthNames=['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
-document.getElementById('periodLabel').textContent=monthNames[currentMonth]+' de '+currentYear;
+    const monthNames=['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+    document.getElementById('periodLabel').textContent=monthNames[currentMonth]+' de '+currentYear;
 }
+
 async function changeMonth(){
-currentMonth=parseInt(document.getElementById('monthSelect').value,10);
-currentYear=parseInt(document.getElementById('yearSelect').value,10);
-updatePeriodLabel();
-await loadData();
+    currentMonth=parseInt(document.getElementById('monthSelect').value,10);
+    currentYear=parseInt(document.getElementById('yearSelect').value,10);
+    updatePeriodLabel();
+    await loadData();
 }
+
+function goToCurrentMonth(){
+    currentMonth=new Date().getMonth();
+    currentYear=new Date().getFullYear();
+    document.getElementById('monthSelect').value=currentMonth;
+    document.getElementById('yearSelect').value=currentYear;
+    changeMonth();
+}
+
 document.getElementById('monthSelect').addEventListener('change',changeMonth);
 document.getElementById('yearSelect').addEventListener('change',changeMonth);
 initializeYearSelector();
-initializeMonthSelector();
+document.getElementById('monthSelect').value=currentMonth;
 updatePeriodLabel();
 loadData();
 </script>
