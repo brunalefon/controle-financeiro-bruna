@@ -141,9 +141,20 @@ let currentYear=new Date().getFullYear();
 let incomeChart,expenseChart;
 let localReceitas=[],localDespesas=[],localFaturas=[];
 
-function showLoading(v){document.getElementById('loadingOverlay').style.display=v?'flex':'none';}
-function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
-function formatCurrency(v){const n=Number(v)||0;return 'R$ '+n.toFixed(2).replace('.',',').replace(/\B(?=(\d{3})+(?!\d))/g,'.');}
+function showLoading(v){
+    const el = document.getElementById('loadingOverlay');
+    if(el) el.style.display=v?'flex':'none';
+}
+function showToast(msg){
+    const t=document.getElementById('toast');
+    if(!t) return;
+    t.textContent=msg;t.classList.add('show');
+    setTimeout(()=>t.classList.remove('show'),2500);
+}
+function formatCurrency(v){
+    const n=Number(v)||0;
+    return 'R$ '+n.toFixed(2).replace('.',',').replace(/\B(?=(\d{3})+(?!\d))/g,'.');
+}
 
 const incomeCtx=document.getElementById('incomeChart').getContext('2d');
 const expenseCtx=document.getElementById('expenseChart').getContext('2d');
@@ -154,17 +165,18 @@ expenseChart=new Chart(expenseCtx,{type:'doughnut',data:{labels:[],datasets:[{da
 async function loadData(){
     showLoading(true);
     try{
-        const [rRes,dRes,fRes,cRes]=await Promise.all([
-            sb.from('receitas').select('*').eq('user_id',USER_ID).eq('mes',currentMonth).eq('ano',currentYear).order('created_at',{ascending:false}),
-            sb.from('despesas').select('*').eq('user_id',USER_ID).eq('mes',currentMonth).eq('ano',currentYear).order('created_at',{ascending:false}),
-            sb.from('faturas').select('*').eq('user_id',USER_ID).order('created_at',{ascending:false}),
-            sb.from('mes_config').select('*').eq('user_id',USER_ID).eq('mes',currentMonth).eq('ano',currentYear).single()
-        ]);
+        const rQuery = sb.from('receitas').select('*').eq('user_id',USER_ID).eq('mes',currentMonth).eq('ano',currentYear).order('created_at',{ascending:false});
+        const dQuery = sb.from('despesas').select('*').eq('user_id',USER_ID).eq('mes',currentMonth).eq('ano',currentYear).order('created_at',{ascending:false});
+        const fQuery = sb.from('faturas').select('*').eq('user_id',USER_ID).order('created_at',{ascending:false});
+        const cQuery = sb.from('mes_config').select('*').eq('user_id',USER_ID).eq('mes',currentMonth).eq('ano',currentYear).maybeSingle();
+
+        const [rRes,dRes,fRes,cRes]=await Promise.all([rQuery, dQuery, fQuery, cQuery]);
+        
         localReceitas=rRes.data||[];
         localDespesas=dRes.data||[];
         localFaturas=fRes.data||[];
         
-        if(cRes.data){
+        if(cRes && cRes.data){
             document.getElementById('previousBalance').textContent=formatCurrency(cRes.data.saldo_anterior);
             document.getElementById('previousBalanceInput').value=cRes.data.saldo_anterior||0;
         }else{
@@ -173,11 +185,21 @@ async function loadData(){
         }
         
         updateAll();
-    }catch(e){console.error(e);showToast('Erro ao carregar dados.');}
-    showLoading(false);
+    }catch(e){
+        console.error('Erro no loadData:', e);
+        showToast('Erro ao carregar dados.');
+    } finally {
+        showLoading(false);
+    }
 }
 
-function updateAll(){updateCharts();updateBalance();renderIncomeHistory();renderExpenseHistory();renderInvoices();}
+function updateAll(){
+    updateCharts();
+    updateBalance();
+    renderIncomeHistory();
+    renderExpenseHistory();
+    renderInvoices();
+}
 
 function updateCharts(){
     const incomeMap={},expenseMap={};
@@ -230,14 +252,19 @@ async function addIncome(){
     const cat=document.getElementById('incomeCategory').value;
     if(!title||isNaN(value)||value<=0){alert('Dados inválidos.');return;}
     showLoading(true);
-    const {data,error}=await sb.from('receitas').insert({user_id:USER_ID,titulo:title,valor:value,categoria:cat,mes:currentMonth,ano:currentYear}).select().single();
-    if(error){showToast('Erro ao salvar.');showLoading(false);return;}
-    localReceitas.unshift(data);
-    document.getElementById('incomeTitle').value='';
-    document.getElementById('incomeValue').value='';
-    updateAll();
-    showToast('Receita adicionada!');
-    showLoading(false);
+    try {
+        const {data,error}=await sb.from('receitas').insert({user_id:USER_ID,titulo:title,valor:value,categoria:cat,mes:currentMonth,ano:currentYear}).select().single();
+        if(error) throw error;
+        localReceitas.unshift(data);
+        document.getElementById('incomeTitle').value='';
+        document.getElementById('incomeValue').value='';
+        updateAll();
+        showToast('Receita adicionada!');
+    } catch(e) {
+        showToast('Erro ao salvar.');
+    } finally {
+        showLoading(false);
+    }
 }
 
 async function addExpense(){
@@ -246,32 +273,48 @@ async function addExpense(){
     const cat=document.getElementById('expenseCategory').value;
     if(!title||isNaN(value)||value<=0){alert('Dados inválidos.');return;}
     showLoading(true);
-    const {data,error}=await sb.from('despesas').insert({user_id:USER_ID,titulo:title,valor:value,categoria:cat,mes:currentMonth,ano:currentYear}).select().single();
-    if(error){showToast('Erro ao salvar.');showLoading(false);return;}
-    localDespesas.unshift(data);
-    document.getElementById('expenseTitle').value='';
-    document.getElementById('expenseValue').value='';
-    updateAll();
-    showToast('Despesa adicionada!');
-    showLoading(false);
+    try {
+        const {data,error}=await sb.from('despesas').insert({user_id:USER_ID,titulo:title,valor:value,categoria:cat,mes:currentMonth,ano:currentYear}).select().single();
+        if(error) throw error;
+        localDespesas.unshift(data);
+        document.getElementById('expenseTitle').value='';
+        document.getElementById('expenseValue').value='';
+        updateAll();
+        showToast('Despesa adicionada!');
+    } catch(e) {
+        showToast('Erro ao salvar.');
+    } finally {
+        showLoading(false);
+    }
 }
 
 async function deleteIncome(id){
     if(!confirm('Excluir?'))return;
-    await sb.from('receitas').delete().eq('id',id);
-    localReceitas=localReceitas.filter(r=>r.id!==id);
-    updateAll();
+    showLoading(true);
+    try {
+        await sb.from('receitas').delete().eq('id',id);
+        localReceitas=localReceitas.filter(r=>r.id!==id);
+        updateAll();
+    } finally {
+        showLoading(false);
+    }
 }
 
 async function deleteExpense(id){
     if(!confirm('Excluir?'))return;
-    await sb.from('despesas').delete().eq('id',id);
-    localDespesas=localDespesas.filter(d=>d.id!==id);
-    updateAll();
+    showLoading(true);
+    try {
+        await sb.from('despesas').delete().eq('id',id);
+        localDespesas=localDespesas.filter(d=>d.id!==id);
+        updateAll();
+    } finally {
+        showLoading(false);
+    }
 }
 
 function renderIncomeHistory(){
     const list=document.getElementById('incomeHistoryList');
+    if(!list) return;
     const items=localReceitas.slice(0,5);
     if(!items.length){list.innerHTML='<p class="notes">Nenhuma receita.</p>';return;}
     list.innerHTML=items.map(item=>`<div class="mini-item"><div class="mini-item-main"><span class="mini-title">${item.titulo}</span><span class="mini-meta">${formatCurrency(item.valor)} &bull; ${item.categoria}</span></div><div class="mini-actions"><button class="btn btn-sm btn-danger" onclick="deleteIncome(${item.id})">Excluir</button></div></div>`).join('');
@@ -279,6 +322,7 @@ function renderIncomeHistory(){
 
 function renderExpenseHistory(){
     const list=document.getElementById('expenseHistoryList');
+    if(!list) return;
     const items=localDespesas.slice(0,5);
     if(!items.length){list.innerHTML='<p class="notes">Nenhuma despesa.</p>';return;}
     list.innerHTML=items.map(item=>`<div class="mini-item"><div class="mini-item-main"><span class="mini-title">${item.titulo}</span><span class="mini-meta">${formatCurrency(item.valor)} &bull; ${item.categoria}</span></div><div class="mini-actions"><button class="btn btn-sm btn-danger" onclick="deleteExpense(${item.id})">Excluir</button></div></div>`).join('');
@@ -302,15 +346,22 @@ async function addInvoice(){
     }
     const finalMonth=new Date(months[months.length-1].date).toLocaleDateString('pt-BR',{month:'long',year:'numeric'});
     showLoading(true);
-    const {data,error}=await sb.from('faturas').insert({user_id:USER_ID,nome:name,valor:value,parcelas:installments,juros:interest,total_com_juros:totalWithInterest,valor_mensal:monthlyWithInterest,mes_final:finalMonth,meses_status:months}).select().single();
-    if(error){showToast('Erro.');showLoading(false);return;}
-    localFaturas.push(data);
-    document.getElementById('invoiceName').value=''; document.getElementById('invoiceValue').value=''; document.getElementById('invoiceInstallments').value=''; document.getElementById('invoiceInterest').value='';
-    renderInvoices(); showToast('Fatura adicionada!'); showLoading(false);
+    try {
+        const {data,error}=await sb.from('faturas').insert({user_id:USER_ID,nome:name,valor:value,parcelas:installments,juros:interest,total_com_juros:totalWithInterest,valor_mensal:monthlyWithInterest,mes_final:finalMonth,meses_status:months}).select().single();
+        if(error) throw error;
+        localFaturas.push(data);
+        document.getElementById('invoiceName').value=''; document.getElementById('invoiceValue').value=''; document.getElementById('invoiceInstallments').value=''; document.getElementById('invoiceInterest').value='';
+        renderInvoices(); showToast('Fatura adicionada!');
+    } catch(e) {
+        showToast('Erro ao adicionar fatura.');
+    } finally {
+        showLoading(false);
+    }
 }
 
 function renderInvoices(){
     const container=document.getElementById('invoiceList');
+    if(!container) return;
     if(!localFaturas.length){container.innerHTML='<p class="notes">Nenhuma fatura.</p>';return;}
     container.innerHTML=localFaturas.map(inv=>{
         const months=inv.meses_status||[];
@@ -322,32 +373,44 @@ async function toggleMonthPaid(invoiceId,monthIndex){
     const inv=localFaturas.find(i=>i.id===invoiceId);if(!inv)return;
     const months=[...(inv.meses_status||[])];
     months[monthIndex]={...months[monthIndex],paid:!months[monthIndex].paid};
-    await sb.from('faturas').update({meses_status:months}).eq('id',invoiceId);
-    inv.meses_status=months;
-    renderInvoices();
+    try {
+        await sb.from('faturas').update({meses_status:months}).eq('id',invoiceId);
+        inv.meses_status=months;
+        renderInvoices();
+    } catch(e){ showToast('Erro ao atualizar fatura.'); }
 }
 
 async function deleteInvoice(id){
     if(!confirm('Excluir?'))return;
-    await sb.from('faturas').delete().eq('id',id);
-    localFaturas=localFaturas.filter(i=>i.id!==id);
-    renderInvoices();
+    showLoading(true);
+    try {
+        await sb.from('faturas').delete().eq('id',id);
+        localFaturas=localFaturas.filter(i=>i.id!==id);
+        renderInvoices();
+    } finally {
+        showLoading(false);
+    }
 }
 
 async function savePreviousBalance(){
     const value=parseFloat(document.getElementById('previousBalanceInput').value);
     if(isNaN(value))return;
     showLoading(true);
-    await sb.from('mes_config').upsert({user_id:USER_ID,mes:currentMonth,ano:currentYear,saldo_anterior:value},{onConflict:'user_id,mes,ano'});
-    document.getElementById('previousBalance').textContent=formatCurrency(value);
-    await updateBalance();
-    showToast('Saldo salvo!');
-    showLoading(false);
+    try {
+        await sb.from('mes_config').upsert({user_id:USER_ID,mes:currentMonth,ano:currentYear,saldo_anterior:value},{onConflict:'user_id,mes,ano'});
+        document.getElementById('previousBalance').textContent=formatCurrency(value);
+        await updateBalance();
+        showToast('Saldo salvo!');
+    } finally {
+        showLoading(false);
+    }
 }
 
 function initializeYearSelector(){
     const yearSelect=document.getElementById('yearSelect');
+    if(!yearSelect) return;
     const yearNow=new Date().getFullYear();
+    yearSelect.innerHTML = '';
     for(let y=yearNow-2;y<=yearNow+5;y++){
         const opt=document.createElement('option'); opt.value=y; opt.textContent=y;
         if(y===yearNow)opt.selected=true;
@@ -356,13 +419,18 @@ function initializeYearSelector(){
 }
 
 function updatePeriodLabel(){
+    const el = document.getElementById('periodLabel');
+    if(!el) return;
     const monthNames=['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
-    document.getElementById('periodLabel').textContent=monthNames[currentMonth]+' de '+currentYear;
+    el.textContent=monthNames[currentMonth]+' de '+currentYear;
 }
 
 async function changeMonth(){
-    currentMonth=parseInt(document.getElementById('monthSelect').value,10);
-    currentYear=parseInt(document.getElementById('yearSelect').value,10);
+    const mEl = document.getElementById('monthSelect');
+    const yEl = document.getElementById('yearSelect');
+    if(!mEl || !yEl) return;
+    currentMonth=parseInt(mEl.value,10);
+    currentYear=parseInt(yEl.value,10);
     updatePeriodLabel();
     await loadData();
 }
@@ -370,15 +438,20 @@ async function changeMonth(){
 function goToCurrentMonth(){
     currentMonth=new Date().getMonth();
     currentYear=new Date().getFullYear();
-    document.getElementById('monthSelect').value=currentMonth;
-    document.getElementById('yearSelect').value=currentYear;
+    const mEl = document.getElementById('monthSelect');
+    const yEl = document.getElementById('yearSelect');
+    if(mEl) mEl.value=currentMonth;
+    if(yEl) yEl.value=currentYear;
     changeMonth();
 }
 
-document.getElementById('monthSelect').addEventListener('change',changeMonth);
-document.getElementById('yearSelect').addEventListener('change',changeMonth);
+const ms = document.getElementById('monthSelect');
+const ys = document.getElementById('yearSelect');
+if(ms) ms.addEventListener('change',changeMonth);
+if(ys) ys.addEventListener('change',changeMonth);
+
 initializeYearSelector();
-document.getElementById('monthSelect').value=currentMonth;
+if(ms) ms.value=currentMonth;
 updatePeriodLabel();
 loadData();
 </script>
