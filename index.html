@@ -109,7 +109,7 @@ const USER_ID='bruna';
 let currentMonth=new Date().getMonth();
 let currentYear=new Date().getFullYear();
 let incomeChart,expenseChart;
-let localReceitas=[],localDespesas=[],localFaturas=[],localFixos=[];
+let localReceitas=[],localDespesas=[],localFaturas=[];
 function showLoading(v){document.getElementById('loadingOverlay').style.display=v?'flex':'none';}
 function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
 function formatCurrency(v){const n=Number(v)||0;return 'R$ '+n.toFixed(2).replace('.',',').replace(/\B(?=(\d{3})+(?!\d))/g,'.');}
@@ -121,17 +121,13 @@ expenseChart=new Chart(expenseCtx,{type:'doughnut',data:{labels:[],datasets:[{da
 async function loadData(){
 showLoading(true);
 try{
-const [rRes,dRes,fRes,fxRes]=await Promise.all([
+const [rRes,dRes,fRes]=await Promise.all([
 sb.from('receitas').select('*').eq('user_id',USER_ID).eq('mes',currentMonth).eq('ano',currentYear).order('created_at',{ascending:false}),
 sb.from('despesas').select('*').eq('user_id',USER_ID).eq('mes',currentMonth).eq('ano',currentYear).order('created_at',{ascending:false}),
-sb.from('faturas').select('*').eq('user_id',USER_ID).order('created_at',{ascending:false}),
-sb.from('pagamentos_fixos').select('*').eq('user_id',USER_ID).order('created_at',{ascending:false})
-]);
+sb.from('faturas').select('*').eq('user_id',USER_ID).order('created_at',{ascending:false}))];
 localReceitas=rRes.data||[];
 localDespesas=dRes.data||[];
 localFaturas=fRes.data||[];
-localFixos=fxRes.data||[];
-await loadMesConfig();
 updateAll();
 }catch(e){showToast('Erro ao carregar dados: '+e.message);}
 showLoading(false);
@@ -141,14 +137,12 @@ const {data}=await sb.from('mes_config').select('*').eq('user_id',USER_ID).eq('m
 if(data){
 document.getElementById('previousBalance').textContent=formatCurrency(data.saldo_anterior);
 document.getElementById('previousBalanceInput').value=data.saldo_anterior||0;
-document.getElementById('monthNotes').value=data.notas||'';
 }else{
 document.getElementById('previousBalance').textContent=formatCurrency(0);
 document.getElementById('previousBalanceInput').value=0;
-document.getElementById('monthNotes').value='';
 }
 }
-function updateAll(){updateCharts();updateBalance();renderIncomeHistory();renderExpenseHistory();renderInvoices();renderFixedPayments();}
+function updateAll(){updateCharts();updateBalance();renderIncomeHistory();renderExpenseHistory();renderInvoices();}
 function updateCharts(){
 const incomeMap={},expenseMap={};
 localReceitas.forEach(r=>{incomeMap[r.categoria]=(incomeMap[r.categoria]||0)+Number(r.valor);});
@@ -325,19 +319,19 @@ const {data,error}=await sb.from('pagamentos_fixos').insert({user_id:USER_ID,tex
 if(error){showToast('Erro: '+error.message);showLoading(false);return;}
 localFixos.push(data);
 document.getElementById('fixedPaymentText').value='';
-renderFixedPayments();showToast('Pagamento fixo adicionado!');showLoading(false);
+showToast('Pagamento fixo adicionado!');showLoading(false);
 }
 async function toggleFixedPaid(id){
 const item=localFixos.find(p=>p.id===id);if(!item)return;
 item.pago=!item.pago;
 await sb.from('pagamentos_fixos').update({pago:item.pago}).eq('id',id);
-renderFixedPayments();
+
 }
 async function deleteFixedPayment(id){
 if(!confirm('Excluir?'))return;
 await sb.from('pagamentos_fixos').delete().eq('id',id);
 localFixos=localFixos.filter(p=>p.id!==id);
-renderFixedPayments();showToast('Removido.');
+showToast('Removido.');
 }
 function renderFixedPayments(){
 const container=document.getElementById('fixedList');
@@ -352,11 +346,6 @@ await sb.from('mes_config').upsert({user_id:USER_ID,mes:currentMonth,ano:current
 document.getElementById('previousBalance').textContent=formatCurrency(value);
 await updateBalance();
 showToast('Saldo anterior salvo!');showLoading(false);
-}
-async function saveNotes(){
-const notes=document.getElementById('monthNotes').value;
-await sb.from('mes_config').upsert({user_id:USER_ID,mes:currentMonth,ano:currentYear,notas:notes},{onConflict:'user_id,mes,ano'});
-showToast('Notas salvas para este mês.');
 }
 function initializeYearSelector(){
 const yearSelect=document.getElementById('yearSelect');
