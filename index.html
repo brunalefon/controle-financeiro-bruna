@@ -200,7 +200,7 @@ function updateCharts(){
 }
 
 async function updateBalance(){
-    const prev=parseFloat(document.getElementById('previousBalanceInput').value)||0;
+    const prev=0;
     const ti=localReceitas.reduce((a,r)=>a+Number(r.valor),0);
     const te=localDespesas.reduce((a,d)=>a+Number(d.valor),0);
     const bal=prev+ti-te;
