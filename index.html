@@ -19,7 +19,7 @@
 <div class="pill-row"><span class="pill">Renda e despesas</span><span class="pill">Parcelas e faturas</span><span class="pill">Gastos no mês</span></div>
 </header>
 <section class="card-2col">
-<div class="card"><h2>Saldo do mês</h2><small>Renda - despesas deste mês.</small><div class="big-amount" id="summaryBalance">R$ 0,00</div><div class="highlight-chip"><span>Resultado mensal</span></div></div>
+<div class="card"><h2>Saldo do mês</h2><small>Renda - despesas deste mês.</small><div class="big-amount" id="summaryBalance">R$ 0,00</div><div class="highlight-chip"><span>Resultado mensal</span></div></div><div class="card"><h2>Saldo Total</h2><small>Receitas menos despesas de todos os meses.</small><div class="big-amount" id="summaryTotal">R$ 0,00</div><div class="label-muted">Todos os períodos</div></div>
 
 </section>
     
@@ -358,7 +358,7 @@ async function deleteInvoice(id){
     }
 }
 
-async function computeAllTimeTotal(){ try { const {data:recs}=await sb.from('receitas').select('valor').eq('user_id',USER_ID); const {data:desps}=await sb.from('despesas').select('valor').eq('user_id',USER_ID); const ti=(recs||[]).reduce((a,r)=>a+Number(r.valor),0); const te=(desps||[]).reduce((a,d)=>a+Number(d.valor),0); const elI=document.getElementById('allTimeIncome'); const elE=document.getElementById('allTimeExpense'); if(elI) elI.textContent=formatCurrency(ti); if(elE) elE.textContent=formatCurrency(te); } catch(e){console.error('computeAllTimeTotal',e);} } function initializeYearSelector(){
+async function computeAllTimeTotal(){ try { const {data:recs}=await sb.from('receitas').select('valor').eq('user_id',USER_ID); const {data:desps}=await sb.from('despesas').select('valor').eq('user_id',USER_ID); const ti=(recs||[]).reduce((a,r)=>a+Number(r.valor),0); const te=(desps||[]).reduce((a,d)=>a+Number(d.valor),0); const elI=document.getElementById('allTimeIncome'); const elE=document.getElementById('allTimeExpense'); if(elI) elI.textContent=formatCurrency(ti); if(elE) elE.textContent=formatCurrency(te); const elT=document.getElementById('summaryTotal'); if(elT) elT.textContent=formatCurrency(ti-te); } catch(e){console.error('computeAllTimeTotal',e);} } function initializeYearSelector(){
     const yearSelect=document.getElementById('yearSelect');
     if(!yearSelect) return;
     const yearNow=new Date().getFullYear();
