@@ -22,6 +22,7 @@
 <div class="card"><h2>Saldo do mês</h2><small>Renda - despesas deste mês.</small><div class="big-amount" id="summaryBalance">R$ 0,00</div><div class="highlight-chip"><span>Resultado mensal</span></div></div>
 <div class="card"><h2>Resultado do ano</h2><small>Todos os meses somados: receitas - despesas.</small><div class="big-amount" id="summaryYear">R$ 0,00</div><div class="label-muted">Dados em nuvem.</div></div>
 </section>
+    <section class="card-2col"><div class="card"><h2>Receita Final</h2><small>Total de todas as receitas de todos os meses e anos.</small><div class="big-amount" id="allTimeIncome">R$ 0,00</div><div class="label-muted">Todos os períodos</div></div><div class="card"><h2>Despesa Final</h2><small>Total de todas as despesas de todos os meses e anos.</small><div class="big-amount" id="allTimeExpense">R$ 0,00</div><div class="label-muted">Todos os períodos</div></div></section>
 <section class="card">
 <h2>Período que você está vendo</h2>
 <small>Mude o mês/ano para ver outros controles que você já lançou.</small>
@@ -148,7 +149,7 @@ async function loadData(){
         
         localReceitas=rRes.data||[];
         localDespesas=dRes.data||[];
-        localFaturas=fRes.data||[];
+        localFaturas=fRes.data||[]; computeAllTimeTotal();
         
         updateAll();
     }catch(e){
@@ -356,7 +357,7 @@ async function deleteInvoice(id){
     }
 }
 
-function initializeYearSelector(){
+async function computeAllTimeTotal(){ try { const {data:recs}=await sb.from('receitas').select('valor').eq('user_id',USER_ID); const {data:desps}=await sb.from('despesas').select('valor').eq('user_id',USER_ID); const ti=(recs||[]).reduce((a,r)=>a+Number(r.valor),0); const te=(desps||[]).reduce((a,d)=>a+Number(d.valor),0); const elI=document.getElementById('allTimeIncome'); const elE=document.getElementById('allTimeExpense'); if(elI) elI.textContent=formatCurrency(ti); if(elE) elE.textContent=formatCurrency(te); } catch(e){console.error('computeAllTimeTotal',e);} } function initializeYearSelector(){
     const yearSelect=document.getElementById('yearSelect');
     if(!yearSelect) return;
     const yearNow=new Date().getFullYear();
