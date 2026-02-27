@@ -158,14 +158,6 @@ async function loadData(){
         localDespesas=dRes.data||[];
         localFaturas=fRes.data||[];
         
-        if(cRes && cRes.data){
-            document.getElementById('previousBalance').textContent=formatCurrency(cRes.data.saldo_anterior);
-            document.getElementById('previousBalanceInput').value=cRes.data.saldo_anterior||0;
-        }else{
-            document.getElementById('previousBalance').textContent=formatCurrency(0);
-            document.getElementById('previousBalanceInput').value=0;
-        }
-        
         updateAll();
     }catch(e){
         console.error('Erro no loadData:', e);
@@ -369,20 +361,6 @@ async function deleteInvoice(id){
         await sb.from('faturas').delete().eq('id',id);
         localFaturas=localFaturas.filter(i=>i.id!==id);
         renderInvoices();
-    } finally {
-        showLoading(false);
-    }
-}
-
-async function savePreviousBalance(){
-    const value=parseFloat(document.getElementById('previousBalanceInput').value);
-    if(isNaN(value))return;
-    showLoading(true);
-    try {
-        await sb.from('mes_config').upsert({user_id:USER_ID,mes:currentMonth,ano:currentYear,saldo_anterior:value},{onConflict:'user_id,mes,ano'});
-        document.getElementById('previousBalance').textContent=formatCurrency(value);
-        await updateBalance();
-        showToast('Saldo salvo!');
     } finally {
         showLoading(false);
     }
