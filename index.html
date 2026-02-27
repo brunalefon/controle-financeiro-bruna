@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Controle Financeiro Bruna</title>
+<title>Controle Financeiro</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
@@ -14,14 +14,10 @@
 <div id="toast" class="toast"></div>
 <div class="page">
 <header>
-<h1>Controle financeiro da Bruna</h1>
+<h1>Controle financeiro</h1>
 <p>Resumo do mês, faturas, débitos e lembretes em um lugar só.</p>
 <div class="pill-row"><span class="pill">Renda e despesas</span><span class="pill">Parcelas e faturas</span><span class="pill">Gastos no mês</span></div>
 </header>
-<section class="card-2col">
-<div class="card"><h2>Renda do mês</h2><small>Salário e extras que entram neste mês.</small><div class="big-amount" id="summaryIncome">R$ 0,00</div><div class="label-muted">Com base nas receitas lançadas.</div></div>
-<div class="card"><h2>Despesas do mês</h2><small>Parcelas, assinaturas, débitos e gastos no débito/dinheiro.</small><div class="big-amount" id="summaryExpense">R$ 0,00</div><div class="label-muted">Somando tudo o que saiu.</div></div>
-</section>
 <section class="card-2col">
 <div class="card"><h2>Saldo do mês</h2><small>Renda - despesas deste mês.</small><div class="big-amount" id="summaryBalance">R$ 0,00</div><div class="highlight-chip"><span>Resultado mensal</span></div></div>
 <div class="card"><h2>Resultado do ano</h2><small>Todos os meses somados: receitas - despesas.</small><div class="big-amount" id="summaryYear">R$ 0,00</div><div class="label-muted">Dados em nuvem.</div></div>
@@ -192,8 +188,6 @@ async function updateBalance(){
     const ti=localReceitas.reduce((a,r)=>a+Number(r.valor),0);
     const te=localDespesas.reduce((a,d)=>a+Number(d.valor),0);
     const bal=prev+ti-te;
-    document.getElementById('summaryIncome').textContent=formatCurrency(ti);
-    document.getElementById('summaryExpense').textContent=formatCurrency(te);
     document.getElementById('summaryBalance').textContent=formatCurrency(bal);
     
     computeYearTotal();
