@@ -133,8 +133,8 @@ function formatCurrency(v){
 const incomeCtx=document.getElementById('incomeChart').getContext('2d');
 const expenseCtx=document.getElementById('expenseChart').getContext('2d');
 const chartOptions={responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom'}}};
-incomeChart=new Chart(incomeCtx,{type:'doughnut',data:{labels:[],datasets:[{data:[],backgroundColor:['#5FBA7D','#7AB8CC','#A8D8EA','#FFD93D','#A0AEC0','#ECC94B']}]},options:chartOptions});
-expenseChart=new Chart(expenseCtx,{type:'doughnut',data:{labels:[],datasets:[{data:[],backgroundColor:['#E67E78','#FF8C94','#FFA69E','#FFBCB5','#FFD6CC','#D4A5A5','#C08497','#9B7E9D','#7A6F9B','#6B5B95','#8884D8','#82CA9D','#FFB7B2','#C9ADA7','#CBD5E0']}]},options:chartOptions});
+incomeChart=new Chart(incomeCtx,{type:'doughnut',data:{labels:[],datasets:[{data:[],backgroundColor:['#6D28D9','#C4B5FD','#1D4ED8','#BFDBFE','#059669','#6EE7B7']}]},options:chartOptions});
+expenseChart=new Chart(expenseCtx,{type:'doughnut',data:{labels:[],datasets:[{data:[],backgroundColor:['#EA580C','#FED7AA','#DC2626','#FCA5A5','#DB2777','#FBCFE8','#C2410C','#FDBA74','#B91C1C','#FEE2E2','#BE185D','#F9A8D4','#9A3412','#FF6B6B','#9F1239']}]},options:chartOptions});
 
 async function loadData(){
     showLoading(true);
