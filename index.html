@@ -70,7 +70,7 @@
 </div>
 <button class="btn" onclick="addIncome()">Adicionar receita</button>
 <p style="margin-top:12px"><strong>Últimas receitas (máx. 5)</strong></p>
-<div id="incomeHistoryList" class="mini-list"></div>
+<div id="incomeHistoryList" class="mini-list"> style="max-height:285px;overflow-y:auto;padding-right:4px"></div>
 </div>
 <div>
 <h3>Despesa</h3>
@@ -83,7 +83,7 @@
 </div>
 <button class="btn" onclick="addExpense()">Adicionar despesa</button>
 <p style="margin-top:12px"><strong>Últimas despesas (máx. 5)</strong></p>
-<div id="expenseHistoryList" class="mini-list"></div>
+<div id="expenseHistoryList" class="mini-list"> style="max-height:285px;overflow-y:auto;padding-right:4px"></div>
 </div>
 </div>
 </section>
@@ -281,7 +281,7 @@ async function deleteExpense(id){
 function renderIncomeHistory(){
     const list=document.getElementById('incomeHistoryList');
     if(!list) return;
-    const items=localReceitas.slice(0,5);
+    const items=localReceitas;
     if(!items.length){list.innerHTML='<p class="notes">Nenhuma receita.</p>';return;}
     list.innerHTML=items.map(item=>`<div class="mini-item"><div class="mini-item-main"><span class="mini-title">${item.titulo}</span><span class="mini-meta">${formatCurrency(item.valor)} &bull; ${item.categoria}</span></div><div class="mini-actions"><button class="btn btn-sm btn-danger" onclick="deleteIncome(${item.id})">Excluir</button></div></div>`).join('');
 }
@@ -289,7 +289,7 @@ function renderIncomeHistory(){
 function renderExpenseHistory(){
     const list=document.getElementById('expenseHistoryList');
     if(!list) return;
-    const items=localDespesas.slice(0,5);
+    const items=localDespesas;
     if(!items.length){list.innerHTML='<p class="notes">Nenhuma despesa.</p>';return;}
     list.innerHTML=items.map(item=>`<div class="mini-item"><div class="mini-item-main"><span class="mini-title">${item.titulo}</span><span class="mini-meta">${formatCurrency(item.valor)} &bull; ${item.categoria}</span></div><div class="mini-actions"><button class="btn btn-sm btn-danger" onclick="deleteExpense(${item.id})">Excluir</button></div></div>`).join('');
 }
