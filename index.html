@@ -113,9 +113,15 @@ const sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 const USER_ID='bruna';
 let currentMonth=new Date().getMonth();
 let currentYear=new Date().getFullYear();
-let incomeChart,expenseChart;
-let localReceitas=[],localDespesas=[],localFaturas=[],localInvestimentos[];
-let creditPaid=false;
+let incomeChart;
+let expenseChart;
+
+let localReceitas = new Array();
+let localDespesas = new Array();
+let localFaturas = new Array();
+let localInvestimentos = new Array();
+
+let creditPaid = false;
 
 // chave por mês/ano para o checkbox da fatura atual
 function getCreditPaidKey() {
