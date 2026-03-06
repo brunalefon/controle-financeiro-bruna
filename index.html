@@ -22,7 +22,7 @@
 </header>
 <section class="card-3col">
 <div class="card"><h2>Saldo do mês</h2><small>Renda - despesas em débito deste mês.</small><div class="big-amount" id="summaryBalance">R$ 0,00</div><div class="highlight-chip"><span>Resultado mensal</span></div></div>
-<div class="card"><h2>Fatura Atual</h2><small>Gastos no crédito este mês.</small><div class="big-amount" id="creditBalance">R$ 0,00</div><label class="fatura-paga-label"><input type="checkbox" id="creditPaidCheckbox" onchange="toggleCreditPaid()"><span>Marcar fatura como paga (desconta do Red or Green)</span></label></div>
+<div class="card"><h2>Fatura Atual</h2><small>Gastos no crédito este mês.</small><div class="big-amount" id="creditBalance">R$ 0,00</div><label class="fatura-paga-label"><input type="checkbox" id="creditPaidCheckbox" onchange="toggleCreditPaidForCurrentPeriod()"><span>Marcar fatura como paga (desconta do Red or Green)</span></label></div>
 <div class="card"><h2>Red or Green?</h2><small>Receita Final menos Despesa Final: no lucro ou no vermelho?</small><div class="big-amount" id="redOrGreen">R$ 0,00</div><div class="label-muted" id="redOrGreenLabel">Calculando...</div></div>
 </section>
 <section class="card">
@@ -114,8 +114,31 @@ const USER_ID='bruna';
 let currentMonth=new Date().getMonth();
 let currentYear=new Date().getFullYear();
 let incomeChart,expenseChart;
-let localReceitas=[],localDespesas=[],localFaturas=[],localInvestimentos=[];
+let localReceitas=[],localDespesas=[],localFaturas=[],localInvestimentos[];
 let creditPaid=false;
+
+// chave por mês/ano para o checkbox da fatura atual
+function getCreditPaidKey() {
+  return `creditPaid-${currentMonth}-${currentYear}`;
+}
+
+// carrega o estado do checkbox para o mês/ano atual
+function loadCreditPaidForCurrentPeriod() {
+  const key = getCreditPaidKey();
+  const stored = localStorage.getItem(key);
+  creditPaid = stored === 'true';
+  const checkbox = document.getElementById('creditPaidCheckbox');
+  if (checkbox) checkbox.checked = creditPaid;
+}
+
+// chamada ao marcar/desmarcar o checkbox
+function toggleCreditPaidForCurrentPeriod() {
+  const checkbox = document.getElementById('creditPaidCheckbox');
+  creditPaid = checkbox.checked;
+  localStorage.setItem(getCreditPaidKey(), creditPaid ? 'true' : 'false');
+  computeAllTimeTotal();
+}
+
 function showLoading(v){ const el = document.getElementById('loadingOverlay'); if(el) el.style.display=v?'flex':'none'; }
 function showToast(msg){ const t=document.getElementById('toast'); if(!t) return; t.textContent=msg;t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2500); }
 function formatCurrency(v){ const n=Number(v)||0; return 'R$ '+n.toFixed(2).replace('.',',').replace(/\\B(?=(\\d{3})+(?!\\d))/g,'.'); }
@@ -128,7 +151,6 @@ async function loadData(){ showLoading(true); try{ const rQuery = sb.from('recei
 function updateAll(){ updateCharts(); updateBalance(); renderIncomeHistory(); renderExpenseHistory(); renderInvoices(); }
 function updateCharts(){ const incomeMap={},expenseMap={}; localReceitas.forEach(r=>{incomeMap[r.categoria]=(incomeMap[r.categoria]||0)+Number(r.valor);}); localDespesas.forEach(d=>{expenseMap[d.categoria]=(expenseMap[d.categoria]||0)+Number(d.valor);}); incomeChart.data.labels=Object.keys(incomeMap); incomeChart.data.datasets[0].data=Object.values(incomeMap); incomeChart.update(); expenseChart.data.labels=Object.keys(expenseMap); expenseChart.data.datasets[0].data=Object.values(expenseMap); expenseChart.update(); const ti=Object.values(incomeMap).reduce((a,b)=>a+b,0); const te=Object.values(expenseMap).reduce((a,b)=>a+b,0); document.getElementById('totalIncome').textContent=formatCurrency(ti); document.getElementById('totalExpense').textContent=formatCurrency(te); }
 async function updateBalance(){ const ti=localReceitas.reduce((a,r)=>a+Number(r.valor),0); const teDebito=localDespesas.filter(d=>!d.tipo_pagamento || d.tipo_pagamento==='debito').reduce((a,d)=>a+Number(d.valor),0); const teCredito=localDespesas.filter(d=>d.tipo_pagamento==='credito').reduce((a,d)=>a+Number(d.valor),0); const bal=ti-teDebito; document.getElementById('summaryBalance').textContent=formatCurrency(bal); document.getElementById('creditBalance').textContent=formatCurrency(teCredito); computeYearTotal(); }
-function toggleCreditPaid(){creditPaid=document.getElementById('creditPaidCheckbox').checked;computeAllTimeTotal();}
 async function computeYearTotal(){ try { const {data:recsAll}=await sb.from('receitas').select('mes,valor').eq('user_id',USER_ID).eq('ano',currentYear); const {data:despsAll}=await sb.from('despesas').select('mes,valor,tipo_pagamento').eq('user_id',USER_ID).eq('ano',currentYear); let total=0; for(let m=0;m<12;m++){ const ti=(recsAll||[]).filter(x=>x.mes===m).reduce((a,r)=>a+Number(r.valor),0); const teDebito=(despsAll||[]).filter(x=>x.mes===m && (!x.tipo_pagamento || x.tipo_pagamento==='debito')).reduce((a,d)=>a+Number(d.valor),0); total+=(ti-teDebito); } document.getElementById('summaryYear').textContent=formatCurrency(total); } catch(e){console.error(e);} }
 async function addIncome(){ const title=document.getElementById('incomeTitle').value.trim(); const value=parseFloat(document.getElementById('incomeValue').value); const cat=document.getElementById('incomeCategory').value; if(!title||isNaN(value)||value<=0){alert('Dados inválidos.');return;} showLoading(true); try { const {data,error}=await sb.from('receitas').insert({user_id:USER_ID,titulo:title,valor:value,categoria:cat,mes:currentMonth,ano:currentYear}).select().single(); if(error) throw error; localReceitas.unshift(data); document.getElementById('incomeTitle').value=''; document.getElementById('incomeValue').value=''; updateAll(); showToast('Receita adicionada!'); } catch(e) { showToast('Erro ao salvar.'); } finally { showLoading(false); } }
 async function addExpense(){ const title=document.getElementById('expenseTitle').value.trim(); const value=parseFloat(document.getElementById('expenseValue').value); const cat=document.getElementById('expenseCategory').value; const paymentType=document.getElementById('expensePaymentType').value; if(!title||isNaN(value)||value<=0){alert('Dados inválidos.');return;} showLoading(true); try { const {data,error}=await sb.from('despesas').insert({user_id:USER_ID,titulo:title,valor:value,categoria:cat,tipo_pagamento:paymentType,mes:currentMonth,ano:currentYear}).select().single(); if(error) throw error; localDespesas.unshift(data); document.getElementById('expenseTitle').value=''; document.getElementById('expenseValue').value=''; updateAll(); showToast('Despesa adicionada!'); } catch(e) { showToast('Erro ao salvar.'); } finally { showLoading(false); } }
@@ -146,9 +168,26 @@ async function deleteInvestimento(id){ if(!confirm('Excluir?'))return; showLoadi
 function renderInvestimentos(){ const container=document.getElementById('invList'); if(!container) return; if(!localInvestimentos.length){container.innerHTML='<p class="notes">Nenhum investimento.</p>';return;} container.innerHTML=localInvestimentos.map(inv=>{ const sinal=inv.tipo==='adicionar'?'+':'-'; const cor=inv.tipo==='adicionar'?'var(--green)':'var(--red)'; const tag=inv.destino==='saldo'?'Saldo Total':'Red/Green'; return '<div class="mini-item"><div class="mini-item-main"><span class="mini-title">'+inv.nome+'</span><span class="mini-meta" style="color:'+cor+'">'+sinal+' '+formatCurrency(inv.valor)+' &bull; '+tag+'</span></div><div class="mini-actions"><button class="btn btn-sm btn-danger" onclick="deleteInvestimento('+inv.id+')">Excluir</button></div></div>'; }).join(''); }
 function initializeYearSelector(){ const yearSelect=document.getElementById('yearSelect'); if(!yearSelect) return; const yearNow=new Date().getFullYear(); yearSelect.innerHTML = ''; for(let y=yearNow-2;y<=yearNow+5;y++){ const opt=document.createElement('option'); opt.value=y; opt.textContent=y; if(y===yearNow)opt.selected=true; yearSelect.appendChild(opt); } }
 function updatePeriodLabel(){ const el = document.getElementById('periodLabel'); if(!el) return; const monthNames=['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez']; el.textContent=monthNames[currentMonth]+' de '+currentYear; }
-async function changeMonth(){ const mEl = document.getElementById('monthSelect'); const yEl = document.getElementById('yearSelect'); if(!mEl || !yEl) return; currentMonth=parseInt(mEl.value,10); currentYear=parseInt(yEl.value,10); updatePeriodLabel(); await loadData(); }
+async function changeMonth(){
+  const mEl = document.getElementById('monthSelect');
+  const yEl = document.getElementById('yearSelect');
+  if(!mEl || !yEl) return;
+  currentMonth=parseInt(mEl.value,10);
+  currentYear=parseInt(yEl.value,10);
+  updatePeriodLabel();
+  loadCreditPaidForCurrentPeriod(); // atualiza checkbox do mês/ano
+  await loadData();
+}
 function goToCurrentMonth(){ currentMonth=new Date().getMonth(); currentYear=new Date().getFullYear(); const mEl = document.getElementById('monthSelect'); const yEl = document.getElementById('yearSelect'); if(mEl) mEl.value=currentMonth; if(yEl) yEl.value=currentYear; changeMonth(); }
-const ms = document.getElementById('monthSelect'); const ys = document.getElementById('yearSelect'); if(ms) ms.addEventListener('change',changeMonth); if(ys) ys.addEventListener('change',changeMonth); initializeYearSelector(); if(ms) ms.value=currentMonth; updatePeriodLabel(); loadData();
+const ms = document.getElementById('monthSelect');
+const ys = document.getElementById('yearSelect');
+if(ms) ms.addEventListener('change',changeMonth);
+if(ys) ys.addEventListener('change',changeMonth);
+initializeYearSelector();
+if(ms) ms.value=currentMonth;
+updatePeriodLabel();
+loadCreditPaidForCurrentPeriod(); // carrega estado inicial
+loadData();
 let allTimeIncomeChart, allTimeExpenseChart; const allTimeIncomeCtx = document.getElementById('allTimeIncomeChart').getContext('2d'); const allTimeExpenseCtx = document.getElementById('allTimeExpenseChart').getContext('2d'); allTimeIncomeChart = new Chart(allTimeIncomeCtx, {type:'doughnut',data:{labels:[],datasets:[{data:[],backgroundColor:['#6D28D9','#C4B5FD','#1D4ED8','#BFDBFE','#059669','#6EE7B7','#7C3AED','#A78BFA']}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{font:{size:11}}}}}}); allTimeExpenseChart = new Chart(allTimeExpenseCtx, {type:'doughnut',data:{labels:[],datasets:[{data:[],backgroundColor:['#EA580C','#FED7AA','#DC2626','#FCA5A5','#DB2777','#FBCFE8','#C2410C','#FDBA74','#B91C1C','#FEE2E2','#BE185D','#F9A8D4','#9A3412','#FF6B6B','#9F1239']}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{font:{size:11}}}}}}); async function updateAllTimeCharts(){try{const {data:recsAll}=await sb.from('receitas').select('valor,categoria').eq('user_id',USER_ID);const {data:despsAll}=await sb.from('despesas').select('valor,categoria').eq('user_id',USER_ID);const incomeMapAll={};(recsAll||[]).forEach(r=>{incomeMapAll[r.categoria]=(incomeMapAll[r.categoria]||0)+Number(r.valor);});const expenseMapAll={};(despsAll||[]).forEach(d=>{expenseMapAll[d.categoria]=(expenseMapAll[d.categoria]||0)+Number(d.valor);});if(allTimeIncomeChart){allTimeIncomeChart.data.labels=Object.keys(incomeMapAll);allTimeIncomeChart.data.datasets[0].data=Object.values(incomeMapAll);allTimeIncomeChart.update();const elATI=document.getElementById('allTimeIncomeTotal');if(elATI)elATI.textContent='Total: '+formatCurrency(Object.values(incomeMapAll).reduce((a,b)=>a+b,0));}if(allTimeExpenseChart){allTimeExpenseChart.data.labels=Object.keys(expenseMapAll);allTimeExpenseChart.data.datasets[0].data=Object.values(expenseMapAll);allTimeExpenseChart.update();const elATE=document.getElementById('allTimeExpenseTotal');if(elATE)elATE.textContent='Total: '+formatCurrency(Object.values(expenseMapAll).reduce((a,b)=>a+b,0));}}catch(e){console.error('updateAllTimeCharts',e);}}
 </script>
 </body>
