@@ -7,13 +7,10 @@
 <title>Controle Financeiro</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
 <style>
 :root{--bg-body:#f5f7fb;--bg-card:#ffffff;--bg-soft:#f1f4ff;--accent:#7897ff;--accent-soft:#dde4ff;--accent-strong:#3c57d7;--text-main:#1f2933;--text-muted:#6b7280;--border-soft:#e0e4f0;--green:#34a853;--red:#e15b56}*{box-sizing:border-box;margin:0;padding:0}body{font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg-body);color:var(--text-main);padding:24px}.page{max-width:1080px;margin:0 auto 48px}header{margin-bottom:24px}header h1{font-size:1.9rem;font-weight:700;margin-bottom:4px}header p{font-size:.95rem;color:var(--text-muted)}.pill-row{display:flex;flex-wrap:wrap;gap:8px;margin:4px 0 16px}.pill{padding:4px 10px;border-radius:999px;font-size:.78rem;background:var(--bg-soft);color:var(--text-muted)}.card{background:var(--bg-card);border-radius:12px;border:1px solid var(--border-soft);padding:16px 16px 14px;margin-bottom:16px}.card h2{font-size:1.1rem;margin-bottom:4px}.card small{display:block;font-size:.8rem;color:var(--text-muted);margin-bottom:8px}.card-2col{display:grid;grid-template-columns:1fr 1fr;gap:12px}.card-3col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}.big-amount{font-size:1.6rem;font-weight:700;margin:4px 0}.label-muted{font-size:.8rem;color:var(--text-muted)}.highlight-chip{display:inline-flex;align-items:center;gap:4px;font-size:.8rem;padding:2px 8px;border-radius:999px;background:var(--accent-soft);color:var(--accent-strong);margin-top:4px}.period-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}.period-row select,.period-row input[type=number]{border-radius:999px;border:1px solid var(--border-soft);padding:6px 10px;font-size:.85rem;background:#fff}.field{margin-bottom:10px}.field label{display:block;font-size:.8rem;margin-bottom:4px;color:var(--text-muted)}.field input,.field select,.field textarea{width:100%;border-radius:8px;border:1px solid var(--border-soft);padding:8px 10px;font-size:.9rem;background:#fff}.field textarea{min-height:70px;resize:vertical}.field input:focus,.field select:focus,.field textarea:focus{outline:2px solid var(--accent-soft);outline-offset:1px;border-color:var(--accent-strong)}.btn{border-radius:999px;border:none;padding:8px 14px;font-size:.85rem;font-weight:600;background:var(--accent-strong);color:#fff;cursor:pointer}.btn:hover{background:var(--accent)}.btn-ghost{background:var(--bg-soft);color:var(--text-main)}.btn-ghost:hover{background:#e4e7ff}.btn-danger{background:var(--red)}.btn-danger:hover{background:#c54945}.btn-sm{padding:4px 9px;border-radius:999px;font-size:.78rem}.two-cols{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1.1fr);gap:16px}.chart-wrap{display:flex;flex-direction:column;gap:8px}.chart-canvas-wrap{width:100%;height:220px}.chart-row{display:flex;flex-wrap:nowrap;gap:16px}.chart-row div{flex:1 1 50%}.mini-list{margin-top:6px}.mini-item{border-radius:8px;border:1px solid var(--border-soft);padding:6px 8px;font-size:.82rem;display:flex;justify-content:space-between;align-items:center;margin-bottom:4px}.mini-item-main{display:flex;flex-direction:column;gap:1px}.mini-title{font-weight:600}.mini-meta{font-size:.75rem;color:var(--text-muted)}.mini-actions{display:flex;gap:4px;align-items:center;margin-left:8px;flex-shrink:0}.invoice-header-row{display:flex;justify-content:space-between;align-items:baseline;gap:8px}.invoice-name{font-weight:600}.invoice-meta{font-size:.8rem;color:var(--text-muted);margin-top:2px}.months-checklist{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}.month-pill{display:inline-flex;align-items:center;gap:4px;border-radius:999px;padding:3px 8px;background:var(--bg-soft);font-size:.75rem}.month-pill input{margin:0;width:12px;height:12px}.fatura-paga-label{display:flex;align-items:center;gap:8px;margin-top:10px;font-size:.85rem;cursor:pointer;color:var(--text-muted)}.fatura-paga-label input[type=checkbox]{width:16px;height:16px;cursor:pointer;accent-color:var(--accent-strong)}.loading-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(255,255,255,.8);display:flex;align-items:center;justify-content:center;z-index:9999;font-size:1.1rem;color:var(--accent-strong)}.toast{position:fixed;bottom:24px;right:24px;background:var(--accent-strong);color:#fff;padding:10px 18px;border-radius:8px;font-size:.9rem;z-index:9999;opacity:0;transition:opacity .3s}.toast.show{opacity:1}@media(max-width:768px){.two-cols{grid-template-columns:1fr}.card-2col{grid-template-columns:1fr}.card-3col{grid-template-columns:1fr}body{padding:16px}}
-/* scroll nas listinhas de receitas/despesas */
-.mini-list-scroll {
-  max-height: 220px;
-  overflow-y: auto;
-}
+.mini-list-scroll{max-height:220px;overflow-y:auto}
 </style>
 </head>
 <body>
@@ -133,7 +130,7 @@
 
 <section class="card">
 <h2>Investimentos</h2>
-<small>Valores guardados ou investidos. Escolha se devem contar no Saldo Total ou apenas no Red or Green?</small>
+<small>Valores guardados ou investidos. Servem como ilustração e só entram no Red or Green se você escolher.</small>
 <div class="field"><label>Nome / onde está</label><input type="text" id="invNome" placeholder="Ex. Nubank, poupança, tesouro"></div>
 <div class="field"><label>Valor R$</label><input type="number" id="invValor" step="0.01" placeholder="0,00"></div>
 <div class="field"><label>Tipo</label>
@@ -142,11 +139,16 @@
     <option value="adicionar">Adicionar (retirar do investimento)</option>
   </select>
 </div>
-<div class="field"><label>Contar em</label><select id="invDestino"><option value="saldo">Saldo Total</option><option value="redgreen">Red / Green</option></select></div>
+<div class="field"><label>Impacto</label>
+  <select id="invDestino">
+    <option value="nenhum">Apenas ilustrativo</option>
+    <option value="redgreen">Ajustar Red / Green</option>
+  </select>
+</div>
 <button class="btn" onclick="addInvestimento()">Salvar investimento</button>
 <div id="invList" class="mini-list" style="margin-top:8px"><p class="notes">Nenhum investimento.</p></div>
 <p id="invTotalLabel" class="label-muted" style="margin-top:6px">
-  Total investido: R$ 0,00
+  Total investido (aplicações): R$ 0,00
 </p>
 </section>
 
@@ -157,7 +159,7 @@
 
 <div class="card-2col">
 <div class="card"><h2>Resultado do ano</h2><small>Todos os meses somados: receitas - despesas.</small><div class="big-amount" id="summaryYear">R$ 0,00</div><p style="font-size:.78rem;color:var(--text-muted);margin-top:4px">Dados em nuvem.</p></div>
-<div class="card"><h2>Saldo Total</h2><small>Receitas menos despesas de todos os meses.</small><div class="big-amount" id="summaryTotal">R$ 0,00</div></div>
+<div class="card"><h2>Saldo Total</h2><small>Receitas menos despesas de todos os meses (sem investimento).</small><div class="big-amount" id="summaryTotal">R$ 0,00</div></div>
 </div>
 
 <section class="card">
@@ -181,66 +183,65 @@ let currentYear=new Date().getFullYear();
 let incomeChart;
 let expenseChart;
 
-let localReceitas = new Array();
-let localDespesas = new Array();
-let localFaturas = new Array();
-let localInvestimentos = new Array();
+let localReceitas=[];
+let localDespesas=[];
+let localFaturas=[];
+let localInvestimentos=[];
 
-let creditPaid = false;
+let creditPaid=false;
 
-// chave por mês/ano para o checkbox da fatura atual
-function getCreditPaidKey() {
-  return 'creditPaid-' + currentMonth + '-' + currentYear;
+function getCreditPaidKey(){return'creditPaid-'+currentMonth+'-'+currentYear;}
+function loadCreditPaidForCurrentPeriod(){
+  const stored=localStorage.getItem(getCreditPaidKey());
+  creditPaid=stored==='true';
+  const cb=document.getElementById('creditPaidCheckbox');
+  if(cb) cb.checked=creditPaid;
 }
-
-// carrega o estado do checkbox para o mês/ano atual
-function loadCreditPaidForCurrentPeriod() {
-  const key = getCreditPaidKey();
-  const stored = localStorage.getItem(key);
-  creditPaid = stored === 'true';
-  const checkbox = document.getElementById('creditPaidCheckbox');
-  if (checkbox) checkbox.checked = creditPaid;
-}
-
-// chamada ao marcar/desmarcar o checkbox
-function toggleCreditPaidForCurrentPeriod() {
-  const checkbox = document.getElementById('creditPaidCheckbox');
-  creditPaid = checkbox.checked;
-  localStorage.setItem(getCreditPaidKey(), creditPaid ? 'true' : 'false');
+function toggleCreditPaidForCurrentPeriod(){
+  const cb=document.getElementById('creditPaidCheckbox');
+  creditPaid=cb.checked;
+  localStorage.setItem(getCreditPaidKey(),creditPaid?'true':'false');
   computeAllTimeTotal();
 }
 
-function showLoading(v){
-  const el = document.getElementById('loadingOverlay');
-  if(el) el.style.display=v?'flex':'none';
-}
-function showToast(msg){
-  const t=document.getElementById('toast');
-  if(!t) return;
-  t.textContent=msg;
-  t.classList.add('show');
-  setTimeout(function(){t.classList.remove('show');},2500);
-}
-function formatCurrency(v){
-  const n=Number(v)||0;
-  return 'R$ '+n.toFixed(2).replace('.',',').replace(/\B(?=(\d{3})+(?!\d))/g,'.');
-}
+function showLoading(v){const el=document.getElementById('loadingOverlay');if(el)el.style.display=v?'flex':'none';}
+function showToast(msg){const t=document.getElementById('toast');if(!t)return;t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
+function formatCurrency(v){const n=Number(v)||0;return'R$ '+n.toFixed(2).replace('.',',').replace(/\B(?=(\d{3})+(?!\d))/g,'.');}
+
+Chart.register(ChartDataLabels);
+
+const chartOptions={
+  responsive:true,
+  maintainAspectRatio:false,
+  plugins:{
+    legend:{position:'bottom'},
+    datalabels:{
+      color:'#ffffff',
+      font:{weight:'600',size:11},
+      formatter:(value,context)=>{
+        const data=context.chart.data.datasets[0].data;
+        const total=data.reduce((a,b)=>a+b,0);
+        if(!total) return '';
+        const pct=(value/total)*100;
+        return pct.toFixed(0)+'%';
+      }
+    }
+  }
+};
 
 const incomeCtx=document.getElementById('incomeChart').getContext('2d');
 const expenseCtx=document.getElementById('expenseChart').getContext('2d');
-const chartOptions={responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom'}}};
 incomeChart=new Chart(incomeCtx,{type:'doughnut',data:{labels:[],datasets:[{data:[],backgroundColor:['#6D28D9','#C4B5FD','#1D4ED8','#BFDBFE','#059669','#6EE7B7']}]},options:chartOptions});
 expenseChart=new Chart(expenseCtx,{type:'doughnut',data:{labels:[],datasets:[{data:[],backgroundColor:['#EA580C','#FED7AA','#DC2626','#FCA5A5','#DB2777','#FBCFE8','#C2410C','#FDBA74','#B91C1C','#FEE2E2','#BE185D','#F9A8D4','#9A3412','#FF6B6B','#9F1239']}]},options:chartOptions});
 
 async function loadData(){
   showLoading(true);
   try{
-    const rQuery = sb.from('receitas').select('*').eq('user_id',USER_ID).eq('mes',currentMonth).eq('ano',currentYear).order('created_at',{ascending:false});
-    const dQuery = sb.from('despesas').select('*').eq('user_id',USER_ID).eq('mes',currentMonth).eq('ano',currentYear).order('created_at',{ascending:false});
-    const fQuery = sb.from('faturas').select('*').eq('user_id',USER_ID).order('created_at',{ascending:false});
-    const iQuery = sb.from('investimentos').select('*').eq('user_id',USER_ID).order('created_at',{ascending:false});
-    const results = await Promise.all([rQuery, dQuery, fQuery, iQuery]);
-    const rRes = results[0], dRes = results[1], fRes = results[2], iRes = results[3];
+    const rQuery=sb.from('receitas').select('*').eq('user_id',USER_ID).eq('mes',currentMonth).eq('ano',currentYear).order('created_at',{ascending:false});
+    const dQuery=sb.from('despesas').select('*').eq('user_id',USER_ID).eq('mes',currentMonth).eq('ano',currentYear).order('created_at',{ascending:false});
+    const fQuery=sb.from('faturas').select('*').eq('user_id',USER_ID).order('created_at',{ascending:false});
+    const iQuery=sb.from('investimentos').select('*').eq('user_id',USER_ID).order('created_at',{ascending:false});
+    const [rRes,dRes,fRes,iRes]=await Promise.all([rQuery,dQuery,fQuery,iQuery]);
     localReceitas=rRes.data||[];
     localDespesas=dRes.data||[];
     localFaturas=fRes.data||[];
@@ -249,11 +250,9 @@ async function loadData(){
     computeAllTimeTotal();
     updateAll();
   }catch(e){
-    console.error('Erro no loadData:', e);
+    console.error('Erro no loadData:',e);
     showToast('Erro ao carregar dados.');
-  } finally {
-    showLoading(false);
-  }
+  }finally{showLoading(false);}
 }
 
 function updateAll(){
@@ -266,28 +265,24 @@ function updateAll(){
 
 function updateCharts(){
   const incomeMap={},expenseMap={};
-  localReceitas.forEach(function(r){
-    incomeMap[r.categoria]=(incomeMap[r.categoria]||0)+Number(r.valor);
-  });
-  localDespesas.forEach(function(d){
-    expenseMap[d.categoria]=(expenseMap[d.categoria]||0)+Number(d.valor);
-  });
+  localReceitas.forEach(r=>{incomeMap[r.categoria]=(incomeMap[r.categoria]||0)+Number(r.valor);});
+  localDespesas.forEach(d=>{expenseMap[d.categoria]=(expenseMap[d.categoria]||0)+Number(d.valor);});
   incomeChart.data.labels=Object.keys(incomeMap);
   incomeChart.data.datasets[0].data=Object.values(incomeMap);
   incomeChart.update();
   expenseChart.data.labels=Object.keys(expenseMap);
   expenseChart.data.datasets[0].data=Object.values(expenseMap);
   expenseChart.update();
-  const ti=Object.values(incomeMap).reduce(function(a,b){return a+b;},0);
-  const te=Object.values(expenseMap).reduce(function(a,b){return a+b;},0);
+  const ti=Object.values(incomeMap).reduce((a,b)=>a+b,0);
+  const te=Object.values(expenseMap).reduce((a,b)=>a+b,0);
   document.getElementById('totalIncome').textContent=formatCurrency(ti);
   document.getElementById('totalExpense').textContent=formatCurrency(te);
 }
 
 async function updateBalance(){
-  const ti=localReceitas.reduce(function(a,r){return a+Number(r.valor);},0);
-  const teDebito=localDespesas.filter(function(d){return !d.tipo_pagamento || d.tipo_pagamento==='debito';}).reduce(function(a,d){return a+Number(d.valor);},0);
-  const teCredito=localDespesas.filter(function(d){return d.tipo_pagamento==='credito';}).reduce(function(a,d){return a+Number(d.valor);},0);
+  const ti=localReceitas.reduce((a,r)=>a+Number(r.valor),0);
+  const teDebito=localDespesas.filter(d=>!d.tipo_pagamento||d.tipo_pagamento==='debito').reduce((a,d)=>a+Number(d.valor),0);
+  const teCredito=localDespesas.filter(d=>d.tipo_pagamento==='credito').reduce((a,d)=>a+Number(d.valor),0);
   const bal=ti-teDebito;
   document.getElementById('summaryBalance').textContent=formatCurrency(bal);
   document.getElementById('creditBalance').textContent=formatCurrency(teCredito);
@@ -295,21 +290,19 @@ async function updateBalance(){
 }
 
 async function computeYearTotal(){
-  try {
-    const recsAllRes = await sb.from('receitas').select('mes,valor').eq('user_id',USER_ID).eq('ano',currentYear);
-    const despsAllRes = await sb.from('despesas').select('mes,valor,tipo_pagamento').eq('user_id',USER_ID).eq('ano',currentYear);
-    const recsAll = recsAllRes.data || [];
-    const despsAll = despsAllRes.data || [];
+  try{
+    const recsAllRes=await sb.from('receitas').select('mes,valor').eq('user_id',USER_ID).eq('ano',currentYear);
+    const despsAllRes=await sb.from('despesas').select('mes,valor,tipo_pagamento').eq('user_id',USER_ID).eq('ano',currentYear);
+    const recsAll=recsAllRes.data||[];
+    const despsAll=despsAllRes.data||[];
     let total=0;
     for(let m=0;m<12;m++){
-      const ti=recsAll.filter(function(x){return x.mes===m;}).reduce(function(a,r){return a+Number(r.valor);},0);
-      const teDebito=despsAll.filter(function(x){return x.mes===m && (!x.tipo_pagamento || x.tipo_pagamento==='debito');}).reduce(function(a,d){return a+Number(d.valor);},0);
+      const ti=recsAll.filter(x=>x.mes===m).reduce((a,r)=>a+Number(r.valor),0);
+      const teDebito=despsAll.filter(x=>x.mes===m&&(!x.tipo_pagamento||x.tipo_pagamento==='debito')).reduce((a,d)=>a+Number(d.valor),0);
       total+=(ti-teDebito);
     }
     document.getElementById('summaryYear').textContent=formatCurrency(total);
-  } catch(e){
-    console.error(e);
-  }
+  }catch(e){console.error(e);}
 }
 
 async function addIncome(){
@@ -318,20 +311,16 @@ async function addIncome(){
   const cat=document.getElementById('incomeCategory').value;
   if(!title||isNaN(value)||value<=0){alert('Dados inválidos.');return;}
   showLoading(true);
-  try {
-    const res = await sb.from('receitas').insert({user_id:USER_ID,titulo:title,valor:value,categoria:cat,mes:currentMonth,ano:currentYear}).select().single();
-    const data = res.data, error = res.error;
-    if(error) throw error;
-    localReceitas.unshift(data);
+  try{
+    const res=await sb.from('receitas').insert({user_id:USER_ID,titulo:title,valor:value,categoria:cat,mes:currentMonth,ano:currentYear}).select().single();
+    if(res.error) throw res.error;
+    localReceitas.unshift(res.data);
     document.getElementById('incomeTitle').value='';
     document.getElementById('incomeValue').value='';
     updateAll();
+    computeAllTimeTotal();
     showToast('Receita adicionada!');
-  } catch(e) {
-    showToast('Erro ao salvar.');
-  } finally {
-    showLoading(false);
-  }
+  }catch(e){showToast('Erro ao salvar.');}finally{showLoading(false);}
 }
 
 async function addExpense(){
@@ -341,117 +330,87 @@ async function addExpense(){
   const paymentType=document.getElementById('expensePaymentType').value;
   if(!title||isNaN(value)||value<=0){alert('Dados inválidos.');return;}
   showLoading(true);
-  try {
-    const res = await sb.from('despesas').insert({user_id:USER_ID,titulo:title,valor:value,categoria:cat,tipo_pagamento:paymentType,mes:currentMonth,ano:currentYear}).select().single();
-    const data = res.data, error = res.error;
-    if(error) throw error;
-    localDespesas.unshift(data);
+  try{
+    const res=await sb.from('despesas').insert({user_id:USER_ID,titulo:title,valor:value,categoria:cat,tipo_pagamento:paymentType,mes:currentMonth,ano:currentYear}).select().single();
+    if(res.error) throw res.error;
+    localDespesas.unshift(res.data);
     document.getElementById('expenseTitle').value='';
     document.getElementById('expenseValue').value='';
     updateAll();
+    computeAllTimeTotal();
     showToast('Despesa adicionada!');
-  } catch(e) {
-    showToast('Erro ao salvar.');
-  } finally {
-    showLoading(false);
-  }
+  }catch(e){showToast('Erro ao salvar.');}finally{showLoading(false);}
 }
 
 async function deleteIncome(id){
   if(!confirm('Excluir?'))return;
   showLoading(true);
-  try {
+  try{
     await sb.from('receitas').delete().eq('id',id);
-    localReceitas=localReceitas.filter(function(r){return r.id!==id;});
+    localReceitas=localReceitas.filter(r=>r.id!==id);
     updateAll();
-  } finally {
-    showLoading(false);
-  }
+    computeAllTimeTotal();
+  }finally{showLoading(false);}
 }
 
 async function deleteExpense(id){
   if(!confirm('Excluir?'))return;
   showLoading(true);
-  try {
+  try{
     await sb.from('despesas').delete().eq('id',id);
-    localDespesas=localDespesas.filter(function(d){return d.id!==id;});
+    localDespesas=localDespesas.filter(d=>d.id!==id);
     updateAll();
-  } finally {
-    showLoading(false);
-  }
+    computeAllTimeTotal();
+  }finally{showLoading(false);}
 }
 
-// renderIncomeHistory com data 27/03 14:35
 function renderIncomeHistory(){
   const list=document.getElementById('incomeHistoryList');
-  if(!list) return;
+  if(!list)return;
   const items=localReceitas.slice(0,50);
-  if(!items.length){
-    list.innerHTML='<p class="notes">Nenhuma receita.</p>';
-    return;
-  }
-  let html = '';
-  items.forEach(function(item){
-    const data = item.created_at
-      ? new Date(item.created_at).toLocaleString('pt-BR', {
-          day: '2-digit',
-          month: '2-digit',
-          hour: '2-digit',
-          minute: '2-digit'
-        })
-      : '';
-    html += '<div class="mini-item">' +
-              '<div class="mini-item-main">' +
-                '<span class="mini-title">' + item.titulo + '</span>' +
-                '<span class="mini-meta">' +
-                  formatCurrency(item.valor) +
-                  ' • ' + item.categoria +
-                  (data ? ' • ' + data : '') +
-                '</span>' +
-              '</div>' +
-              '<div class="mini-actions">' +
-                '<button class="btn btn-sm btn-danger" onclick="deleteIncome(' + item.id + ')">Excluir</button>' +
-              '</div>' +
-            '</div>';
+  if(!items.length){list.innerHTML='<p class="notes">Nenhuma receita.</p>';return;}
+  let html='';
+  items.forEach(item=>{
+    const data=item.created_at?new Date(item.created_at).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}):'';
+    html+='<div class="mini-item">'+
+            '<div class="mini-item-main">'+
+              '<span class="mini-title">'+item.titulo+'</span>'+
+              '<span class="mini-meta">'+
+                formatCurrency(item.valor)+' • '+item.categoria+
+                (data?' • '+data:'')+
+              '</span>'+
+            '</div>'+
+            '<div class="mini-actions">'+
+              '<button class="btn btn-sm btn-danger" onclick="deleteIncome('+item.id+')">Excluir</button>'+
+            '</div>'+
+          '</div>';
   });
-  list.innerHTML = html;
+  list.innerHTML=html;
 }
 
-// renderExpenseHistory com data 27/03 14:35
 function renderExpenseHistory(){
   const list=document.getElementById('expenseHistoryList');
-  if(!list) return;
+  if(!list)return;
   const items=localDespesas.slice(0,50);
-  if(!items.length){
-    list.innerHTML='<p class="notes">Nenhuma despesa.</p>';
-    return;
-  }
-  let html = '';
-  items.forEach(function(item){
-    const data = item.created_at
-      ? new Date(item.created_at).toLocaleString('pt-BR', {
-          day: '2-digit',
-          month: '2-digit',
-          hour: '2-digit',
-          minute: '2-digit'
-        })
-      : '';
-    html += '<div class="mini-item">' +
-              '<div class="mini-item-main">' +
-                '<span class="mini-title">' + item.titulo + '</span>' +
-                '<span class="mini-meta">' +
-                  formatCurrency(item.valor) +
-                  ' • ' + item.categoria +
-                  ' • ' + (item.tipo_pagamento||'débito') +
-                  (data ? ' • ' + data : '') +
-                '</span>' +
-              '</div>' +
-              '<div class="mini-actions">' +
-                '<button class="btn btn-sm btn-danger" onclick="deleteExpense(' + item.id + ')">Excluir</button>' +
-              '</div>' +
-            '</div>';
+  if(!items.length){list.innerHTML='<p class="notes">Nenhuma despesa.</p>';return;}
+  let html='';
+  items.forEach(item=>{
+    const data=item.created_at?new Date(item.created_at).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}):'';
+    html+='<div class="mini-item">'+
+            '<div class="mini-item-main">'+
+              '<span class="mini-title">'+item.titulo+'</span>'+
+              '<span class="mini-meta">'+
+                formatCurrency(item.valor)+' • '+item.categoria+
+                ' • '+(item.tipo_pagamento||'débito')+
+                (data?' • '+data:'')+
+              '</span>'+
+            '</div>'+
+            '<div class="mini-actions">'+
+              '<button class="btn btn-sm btn-danger" onclick="deleteExpense('+item.id+')">Excluir</button>'+
+            '</div>'+
+          '</div>';
   });
-  list.innerHTML = html;
+  list.innerHTML=html;
 }
 
 async function addInvoice(){
@@ -459,10 +418,7 @@ async function addInvoice(){
   const value=parseFloat(document.getElementById('invoiceValue').value);
   const installments=parseInt(document.getElementById('invoiceInstallments').value,10);
   const interest=parseFloat(document.getElementById('invoiceInterest').value)||0;
-  if(!name||isNaN(value)||value<=0||isNaN(installments)||installments<1){
-    alert('Preencha os campos.');
-    return;
-  }
+  if(!name||isNaN(value)||value<=0||isNaN(installments)||installments<1){alert('Preencha os campos.');return;}
   const monthlyBase=value/installments;
   const jurosTotal=value*(interest/100)*installments;
   const totalWithInterest=value+jurosTotal;
@@ -471,156 +427,112 @@ async function addInvoice(){
   const months=[];
   for(let i=0;i<installments;i++){
     const mDate=new Date(now.getFullYear(),now.getMonth()+i,1);
-    months.push({
-      date:mDate.toISOString(),
-      paid:false,
-      label:mDate.toLocaleDateString('pt-BR',{month:'short',year:'numeric'})
-    });
+    months.push({date:mDate.toISOString(),paid:false,label:mDate.toLocaleDateString('pt-BR',{month:'short',year:'numeric'})});
   }
   const finalMonth=new Date(months[months.length-1].date).toLocaleDateString('pt-BR',{month:'long',year:'numeric'});
   showLoading(true);
-  try {
-    const res = await sb.from('faturas').insert({
-      user_id:USER_ID,
-      nome:name,
-      valor:value,
-      parcelas:installments,
-      juros:interest,
-      total_com_juros:totalWithInterest,
-      valor_mensal:monthlyWithInterest,
-      mes_final:finalMonth,
-      meses_status:months
+  try{
+    const res=await sb.from('faturas').insert({
+      user_id:USER_ID,nome:name,valor:value,parcelas:installments,juros:interest,
+      total_com_juros:totalWithInterest,valor_mensal:monthlyWithInterest,mes_final:finalMonth,meses_status:months
     }).select().single();
-    const data = res.data, error = res.error;
-    if(error) throw error;
-    localFaturas.push(data);
+    if(res.error) throw res.error;
+    localFaturas.push(res.data);
     document.getElementById('invoiceName').value='';
     document.getElementById('invoiceValue').value='';
     document.getElementById('invoiceInstallments').value='';
     document.getElementById('invoiceInterest').value='';
     renderInvoices();
     showToast('Fatura adicionada!');
-  } catch(e) {
-    showToast('Erro ao adicionar fatura.');
-  } finally {
-    showLoading(false);
-  }
+  }catch(e){showToast('Erro ao adicionar fatura.');}finally{showLoading(false);}
 }
 
 function renderInvoices(){
   const container=document.getElementById('invoiceList');
-  if(!container) return;
-  if(!localFaturas.length){
-    container.innerHTML='<p class="notes">Nenhuma fatura.</p>';
-    return;
-  }
-  let html = '';
-  localFaturas.forEach(function(inv){
+  if(!container)return;
+  if(!localFaturas.length){container.innerHTML='<p class="notes">Nenhuma fatura.</p>';return;}
+  let html='';
+  localFaturas.forEach(inv=>{
     const months=inv.meses_status||[];
     let monthsHtml='';
-    months.forEach(function(m,idx){
-      monthsHtml += '<label class="month-pill">' +
-                      '<input type="checkbox" ' + (m.paid ? 'checked' : '') +
-                      ' onchange="toggleMonthPaid(' + inv.id + ',' + idx + ')">' +
-                      '<span>' + m.label + '</span>' +
-                    '</label>';
+    months.forEach((m,idx)=>{
+      monthsHtml+='<label class="month-pill">'+
+                    '<input type="checkbox" '+(m.paid?'checked ':'')+
+                    'onchange="toggleMonthPaid('+inv.id+','+idx+')">'+
+                    '<span>'+m.label+'</span>'+
+                  '</label>';
     });
-    html += '<div class="card" style="margin-bottom:8px">' +
-              '<div class="invoice-header-row">' +
-                '<div>' +
-                  '<div class="invoice-name">' + inv.nome + '</div>' +
-                  '<div class="invoice-meta">' + inv.parcelas +
-                  'x de ' + formatCurrency(inv.valor_mensal) + '</div>' +
-                '</div>' +
-                '<button class="btn btn-sm btn-danger" onclick="deleteInvoice(' + inv.id + ')">Excluir</button>' +
-              '</div>' +
-              '<div class="months-checklist">' + monthsHtml + '</div>' +
-            '</div>';
+    html+='<div class="card" style="margin-bottom:8px">'+
+            '<div class="invoice-header-row">'+
+              '<div>'+
+                '<div class="invoice-name">'+inv.nome+'</div>'+
+                '<div class="invoice-meta">'+inv.parcelas+'x de '+formatCurrency(inv.valor_mensal)+'</div>'+
+              '</div>'+
+              '<button class="btn btn-sm btn-danger" onclick="deleteInvoice('+inv.id+')">Excluir</button>'+
+            '</div>'+
+            '<div class="months-checklist">'+monthsHtml+'</div>'+
+          '</div>';
   });
   container.innerHTML=html;
 }
 
 async function toggleMonthPaid(invoiceId,monthIndex){
-  const inv=localFaturas.find(function(i){return i.id===invoiceId;});
+  const inv=localFaturas.find(i=>i.id===invoiceId);
   if(!inv)return;
-  const months=(inv.meses_status||[]).slice();
+  const months=[...(inv.meses_status||[])];
   const current=months[monthIndex];
-  months[monthIndex]={date:current.date,label:current.label,paid:!current.paid};
-  try {
+  months[monthIndex]={date=current.date,label:current.label,paid:!current.paid};
+  try{
     await sb.from('faturas').update({meses_status:months}).eq('id',invoiceId);
     inv.meses_status=months;
     renderInvoices();
-  } catch(e){
-    showToast('Erro ao atualizar fatura.');
-  }
+  }catch(e){showToast('Erro ao atualizar fatura.');}
 }
 
 async function deleteInvoice(id){
   if(!confirm('Excluir?'))return;
   showLoading(true);
-  try {
+  try{
     await sb.from('faturas').delete().eq('id',id);
-    localFaturas=localFaturas.filter(function(i){return i.id!==id;});
+    localFaturas=localFaturas.filter(i=>i.id!==id);
     renderInvoices();
-  } finally {
-    showLoading(false);
-  }
+  }finally{showLoading(false);}
 }
 
 async function computeAllTimeTotal(){
-  try {
-    const recsRes = await sb.from('receitas')
-      .select('valor,mes,ano')
-      .eq('user_id',USER_ID);
-    const despsRes = await sb.from('despesas')
-      .select('valor,categoria,tipo_pagamento,mes,ano')
-      .eq('user_id',USER_ID);
+  try{
+    const recsRes=await sb.from('receitas').select('valor,mes,ano').eq('user_id',USER_ID);
+    const despsRes=await sb.from('despesas').select('valor,categoria,tipo_pagamento,mes,ano').eq('user_id',USER_ID);
+    const recs=recsRes.data||[];
+    const desps=despsRes.data||[];
 
-    const recs = recsRes.data || [];
-    const desps = despsRes.data || [];
+    const ti=recs.reduce((a,r)=>a+Number(r.valor),0);
 
-    const ti = recs.reduce(function(a,r){return a+Number(r.valor);},0);
+    const teDebito2=desps.filter(d=>!d.tipo_pagamento||d.tipo_pagamento==='debito').reduce((a,d)=>a+Number(d.valor),0);
 
-    const teDebito2 = desps
-      .filter(function(d){return !d.tipo_pagamento || d.tipo_pagamento==='debito';})
-      .reduce(function(a,d){return a+Number(d.valor);},0);
+    const teCreditoPassado=desps.filter(d=>
+      d.tipo_pagamento==='credito' &&
+      (d.ano<currentYear||(d.ano===currentYear&&d.mes<currentMonth))
+    ).reduce((a,d)=>a+Number(d.valor),0);
 
-    const teCreditoPassado = desps
-      .filter(function(d){
-        return d.tipo_pagamento==='credito' &&
-               (d.ano < currentYear ||
-                (d.ano === currentYear && d.mes < currentMonth));
-      })
-      .reduce(function(a,d){return a+Number(d.valor);},0);
+    const teCreditoMesAtual=desps.filter(d=>
+      d.tipo_pagamento==='credito' &&
+      d.ano===currentYear &&
+      d.mes===currentMonth
+    ).reduce((a,d)=>a+Number(d.valor),0);
 
-    const teCreditoMesAtual = desps
-      .filter(function(d){
-        return d.tipo_pagamento==='credito' &&
-               d.ano === currentYear &&
-               d.mes === currentMonth;
-      })
-      .reduce(function(a,d){return a+Number(d.valor);},0);
-
-    const teCredito2 = teCreditoPassado + (creditPaid ? teCreditoMesAtual : 0);
-    const te = teDebito2 + teCredito2;
+    const teCredito2=teCreditoPassado+(creditPaid?teCreditoMesAtual:0);
+    const te=teDebito2+teCredito2;
 
     const elI=document.getElementById('allTimeIncome');
     const elE=document.getElementById('allTimeExpense');
-    if(elI) elI.textContent=formatCurrency(ti);
-    if(elE) elE.textContent=formatCurrency(te);
+    if(elI)elI.textContent=formatCurrency(ti);
+    if(elE)elE.textContent=formatCurrency(te);
 
-    // NOVA LÓGICA: "retirar" = +, "adicionar" = -
-    const invSaldo=localInvestimentos
-      .filter(function(i){return i.destino==='saldo';})
-      .reduce(function(a,i){
-        return a + (i.tipo === 'retirar' ? Number(i.valor) : -Number(i.valor));
-      },0);
-
+    // investimentos não contam como receita/despesa; só ajustam Red/Green se destino = 'redgreen'
     const invRog=localInvestimentos
-      .filter(function(i){return i.destino==='redgreen';})
-      .reduce(function(a,i){
-        return a + (i.tipo === 'retirar' ? Number(i.valor) : -Number(i.valor));
-      },0);
+      .filter(i=>i.destino==='redgreen')
+      .reduce((a,i)=>a+(i.tipo==='retirar'?Number(i.valor):-Number(i.valor)),0);
 
     let rog=ti-te+invRog;
     const elRog=document.getElementById('redOrGreen');
@@ -630,14 +542,16 @@ async function computeAllTimeTotal(){
       elRog.style.color=rog>=0?'#3c57d7':'#e05555';
     }
     if(elRogL){
-      elRogL.textContent=rog>=0?'No verde! Lucro de '+formatCurrency(rog):'No vermelho! Faltam '+formatCurrency(Math.abs(rog));
+      elRogL.textContent=rog>=0
+        ? 'No verde! Lucro de '+formatCurrency(rog)
+        : 'No vermelho! Faltam '+formatCurrency(Math.abs(rog));
     }
+
     const elT=document.getElementById('summaryTotal');
-    if(elT) elT.textContent=formatCurrency(ti-te+invSaldo);
+    if(elT)elT.textContent=formatCurrency(ti-te);
+
     updateAllTimeCharts();
-  } catch(e){
-    console.error('computeAllTimeTotal',e);
-  }
+  }catch(e){console.error('computeAllTimeTotal',e);}
 }
 
 async function addInvestimento(){
@@ -649,19 +563,14 @@ async function addInvestimento(){
   showLoading(true);
   try{
     const res=await sb.from('investimentos').insert({user_id:USER_ID,nome:nome,valor:valor,tipo:tipo,destino:destino}).select().single();
-    const data=res.data,error=res.error;
-    if(error) throw error;
-    localInvestimentos.unshift(data);
+    if(res.error) throw res.error;
+    localInvestimentos.unshift(res.data);
     document.getElementById('invNome').value='';
     document.getElementById('invValor').value='';
     renderInvestimentos();
     computeAllTimeTotal();
     showToast('Investimento salvo!');
-  }catch(e){
-    showToast('Erro ao salvar.');
-  } finally{
-    showLoading(false);
-  }
+  }catch(e){showToast('Erro ao salvar.');}finally{showLoading(false);}
 }
 
 async function deleteInvestimento(id){
@@ -669,49 +578,43 @@ async function deleteInvestimento(id){
   showLoading(true);
   try{
     await sb.from('investimentos').delete().eq('id',id);
-    localInvestimentos=localInvestimentos.filter(function(i){return i.id!==id;});
+    localInvestimentos=localInvestimentos.filter(i=>i.id!==id);
     renderInvestimentos();
     computeAllTimeTotal();
-  }finally{
-    showLoading(false);
-  }
+  }finally{showLoading(false);}
 }
 
-// calcula total investido (somente "retirar" = aplicação)
-function updateInvestTotalLabel() {
-  const el = document.getElementById('invTotalLabel');
-  if (!el) return;
-
-  const totalInvest = localInvestimentos
-    .filter(function(i){ return i.tipo === 'retirar'; })
-    .reduce(function(acc, i){ return acc + Number(i.valor || 0); }, 0);
-
-  el.textContent = 'Total investido: ' + formatCurrency(totalInvest);
+function updateInvestTotalLabel(){
+  const el=document.getElementById('invTotalLabel');
+  if(!el)return;
+  const totalInvest=localInvestimentos
+    .filter(i=>i.tipo==='retirar')
+    .reduce((acc,i)=>acc+Number(i.valor||0),0);
+  el.textContent='Total investido (aplicações): '+formatCurrency(totalInvest);
 }
 
 function renderInvestimentos(){
   const container=document.getElementById('invList');
-  if(!container) return;
+  if(!container)return;
   if(!localInvestimentos.length){
     container.innerHTML='<p class="notes">Nenhum investimento.</p>';
     updateInvestTotalLabel();
     return;
   }
   let html='';
-  localInvestimentos.forEach(function(inv){
-    // "retirar" = aplicando (positivo), "adicionar" = retirando (negativo)
+  localInvestimentos.forEach(inv=>{
     const sinal=inv.tipo==='retirar'?'+':'-';
     const cor=inv.tipo==='retirar'?'var(--green)':'var(--red)';
-    const tag=inv.destino==='saldo'?'Saldo Total':'Red/Green';
-    html += '<div class="mini-item">' +
-              '<div class="mini-item-main">' +
-                '<span class="mini-title">'+inv.nome+'</span>' +
-                '<span class="mini-meta" style="color:'+cor+'">'+sinal+' '+formatCurrency(inv.valor)+' • '+tag+'</span>' +
-              '</div>' +
-              '<div class="mini-actions">' +
-                '<button class="btn btn-sm btn-danger" onclick="deleteInvestimento('+inv.id+')">Excluir</button>' +
-              '</div>' +
-            '</div>';
+    const tag=inv.destino==='redgreen'?'Ajusta Red/Green':'Ilustrativo';
+    html+='<div class="mini-item">'+
+            '<div class="mini-item-main">'+
+              '<span class="mini-title">'+inv.nome+'</span>'+
+              '<span class="mini-meta" style="color:'+cor+'">'+sinal+' '+formatCurrency(inv.valor)+' • '+tag+'</span>'+
+            '</div>'+
+            '<div class="mini-actions">'+
+              '<button class="btn btn-sm btn-danger" onclick="deleteInvestimento('+inv.id+')">Excluir</button>'+
+            '</div>'+
+          '</div>';
   });
   container.innerHTML=html;
   updateInvestTotalLabel();
@@ -719,9 +622,9 @@ function renderInvestimentos(){
 
 function initializeYearSelector(){
   const yearSelect=document.getElementById('yearSelect');
-  if(!yearSelect) return;
+  if(!yearSelect)return;
   const yearNow=new Date().getFullYear();
-  yearSelect.innerHTML = '';
+  yearSelect.innerHTML='';
   for(let y=yearNow-2;y<=yearNow+5;y++){
     const opt=document.createElement('option');
     opt.value=y;
@@ -732,16 +635,16 @@ function initializeYearSelector(){
 }
 
 function updatePeriodLabel(){
-  const el = document.getElementById('periodLabel');
-  if(!el) return;
+  const el=document.getElementById('periodLabel');
+  if(!el)return;
   const monthNames=['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
   el.textContent=monthNames[currentMonth]+' de '+currentYear;
 }
 
 async function changeMonth(){
-  const mEl = document.getElementById('monthSelect');
-  const yEl = document.getElementById('yearSelect');
-  if(!mEl || !yEl) return;
+  const mEl=document.getElementById('monthSelect');
+  const yEl=document.getElementById('yearSelect');
+  if(!mEl||!yEl)return;
   currentMonth=parseInt(mEl.value,10);
   currentYear=parseInt(yEl.value,10);
   updatePeriodLabel();
@@ -752,30 +655,74 @@ async function changeMonth(){
 function goToCurrentMonth(){
   currentMonth=new Date().getMonth();
   currentYear=new Date().getFullYear();
-  const mEl = document.getElementById('monthSelect');
-  const yEl = document.getElementById('yearSelect');
-  if(mEl) mEl.value=currentMonth;
-  if(yEl) yEl.value=currentYear;
+  const mEl=document.getElementById('monthSelect');
+  const yEl=document.getElementById('yearSelect');
+  if(mEl)mEl.value=currentMonth;
+  if(yEl)yEl.value=currentYear;
   updatePeriodLabel();
   loadCreditPaidForCurrentPeriod();
   loadData();
 }
 
-const ms = document.getElementById('monthSelect');
-const ys = document.getElementById('yearSelect');
-if(ms) ms.addEventListener('change',changeMonth);
-if(ys) ys.addEventListener('change',changeMonth);
+const ms=document.getElementById('monthSelect');
+const ys=document.getElementById('yearSelect');
+if(ms)ms.addEventListener('change',changeMonth);
+if(ys)ys.addEventListener('change',changeMonth);
 initializeYearSelector();
-if(ms) ms.value=currentMonth;
+if(ms)ms.value=currentMonth;
 updatePeriodLabel();
 loadCreditPaidForCurrentPeriod();
 loadData();
 
-let allTimeIncomeChart, allTimeExpenseChart;
-const allTimeIncomeCtx = document.getElementById('allTimeIncomeChart').getContext('2d');
-const allTimeExpenseCtx = document.getElementById('allTimeExpenseChart').getContext('2d');
-allTimeIncomeChart = new Chart(allTimeIncomeCtx, {type:'doughnut',data:{labels:[],datasets:[{data:[],backgroundColor:['#6D28D9','#C4B5FD','#1D4ED8','#BFDBFE','#059669','#6EE7B7','#7C3AED','#A78BFA']}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{font:{size:11}}}}}});
-allTimeExpenseChart = new Chart(allTimeExpenseCtx, {type:'doughnut',data:{labels:[],datasets:[{data:[],backgroundColor:['#EA580C','#FED7AA','#DC2626','#FCA5A5','#DB2777','#FBCFE8','#C2410C','#FDBA74','#B91C1C','#FEE2E2','#BE185D','#F9A8D4','#9A3412','#FF6B6B','#9F1239']}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{font:{size:11}}}}}});
+let allTimeIncomeChart,allTimeExpenseChart;
+const allTimeIncomeCtx=document.getElementById('allTimeIncomeChart').getContext('2d');
+const allTimeExpenseCtx=document.getElementById('allTimeExpenseChart').getContext('2d');
+
+allTimeIncomeChart=new Chart(allTimeIncomeCtx,{
+  type:'doughnut',
+  data:{labels:[],datasets:[{data:[],backgroundColor:['#6D28D9','#C4B5FD','#1D4ED8','#BFDBFE','#059669','#6EE7B7','#7C3AED','#A78BFA']}]},
+  options:{
+    responsive:true,
+    maintainAspectRatio:false,
+    plugins:{
+      legend:{position:'bottom',labels:{font:{size:11}}},
+      datalabels:{
+        color:'#ffffff',
+        font:{weight:'600',size:11},
+        formatter:(value,context)=>{
+          const data=context.chart.data.datasets[0].data;
+          const total=data.reduce((a,b)=>a+b,0);
+          if(!total)return'';
+          const pct=(value/total)*100;
+          return pct.toFixed(0)+'%';
+        }
+      }
+    }
+  }
+});
+
+allTimeExpenseChart=new Chart(allTimeExpenseCtx,{
+  type:'doughnut',
+  data:{labels:[],datasets:[{data:[],backgroundColor:['#EA580C','#FED7AA','#DC2626','#FCA5A5','#DB2777','#FBCFE8','#C2410C','#FDBA74','#B91C1C','#FEE2E2','#BE185D','#F9A8D4','#9A3412','#FF6B6B','#9F1239']}]},
+  options:{
+    responsive:true,
+    maintainAspectRatio:false,
+    plugins:{
+      legend:{position:'bottom',labels:{font:{size:11}}},
+      datalabels:{
+        color:'#ffffff',
+        font:{weight:'600',size:11},
+        formatter:(value,context)=>{
+          const data=context.chart.data.datasets[0].data;
+          const total=data.reduce((a,b)=>a+b,0);
+          if(!total)return'';
+          const pct=(value/total)*100;
+          return pct.toFixed(0)+'%';
+        }
+      }
+    }
+  }
+});
 
 async function updateAllTimeCharts(){
   try{
@@ -784,30 +731,24 @@ async function updateAllTimeCharts(){
     const recsAll=recsAllRes.data||[];
     const despsAll=despsAllRes.data||[];
     const incomeMapAll={};
-    recsAll.forEach(function(r){
-      incomeMapAll[r.categoria]=(incomeMapAll[r.categoria]||0)+Number(r.valor);
-    });
+    recsAll.forEach(r=>{incomeMapAll[r.categoria]=(incomeMapAll[r.categoria]||0)+Number(r.valor);});
     const expenseMapAll={};
-    despsAll.forEach(function(d){
-      expenseMapAll[d.categoria]=(expenseMapAll[d.categoria]||0)+Number(d.valor);
-    });
+    despsAll.forEach(d=>{expenseMapAll[d.categoria]=(expenseMapAll[d.categoria]||0)+Number(d.valor);});
     if(allTimeIncomeChart){
       allTimeIncomeChart.data.labels=Object.keys(incomeMapAll);
       allTimeIncomeChart.data.datasets[0].data=Object.values(incomeMapAll);
       allTimeIncomeChart.update();
       const elATI=document.getElementById('allTimeIncomeTotal');
-      if(elATI)elATI.textContent='Total: '+formatCurrency(Object.values(incomeMapAll).reduce(function(a,b){return a+b;},0));
+      if(elATI)elATI.textContent='Total: '+formatCurrency(Object.values(incomeMapAll).reduce((a,b)=>a+b,0));
     }
     if(allTimeExpenseChart){
       allTimeExpenseChart.data.labels=Object.keys(expenseMapAll);
       allTimeExpenseChart.data.datasets[0].data=Object.values(expenseMapAll);
       allTimeExpenseChart.update();
       const elATE=document.getElementById('allTimeExpenseTotal');
-      if(elATE)elATE.textContent='Total: '+formatCurrency(Object.values(expenseMapAll).reduce(function(a,b){return a+b;},0));
+      if(elATE)elATE.textContent='Total: '+formatCurrency(Object.values(expenseMapAll).reduce((a,b)=>a+b,0));
     }
-  }catch(e){
-    console.error('updateAllTimeCharts',e);
-  }
+  }catch(e){console.error('updateAllTimeCharts',e);}
 }
 </script>
 </body>
