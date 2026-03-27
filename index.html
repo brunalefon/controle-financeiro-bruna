@@ -140,6 +140,9 @@
 <div class="field"><label>Contar em</label><select id="invDestino"><option value="saldo">Saldo Total</option><option value="redgreen">Red / Green</option></select></div>
 <button class="btn" onclick="addInvestimento()">Salvar investimento</button>
 <div id="invList" class="mini-list" style="margin-top:8px"><p class="notes">Nenhum investimento.</p></div>
+<p id="invTotalLabel" class="label-muted" style="margin-top:6px">
+  Total investido: R$ 0,00
+</p>
 </section>
 
 <div class="card-2col">
@@ -661,11 +664,24 @@ async function deleteInvestimento(id){
   }
 }
 
+// calcula total investido (tipo "adicionar") e atualiza label
+function updateInvestTotalLabel() {
+  const el = document.getElementById('invTotalLabel');
+  if (!el) return;
+
+  const totalInvest = localInvestimentos
+    .filter(function(i){ return i.tipo === 'adicionar'; })
+    .reduce(function(acc, i){ return acc + Number(i.valor || 0); }, 0);
+
+  el.textContent = 'Total investido: ' + formatCurrency(totalInvest);
+}
+
 function renderInvestimentos(){
   const container=document.getElementById('invList');
   if(!container) return;
   if(!localInvestimentos.length){
     container.innerHTML='<p class="notes">Nenhum investimento.</p>';
+    updateInvestTotalLabel();
     return;
   }
   let html='';
@@ -684,6 +700,7 @@ function renderInvestimentos(){
             '</div>';
   });
   container.innerHTML=html;
+  updateInvestTotalLabel();
 }
 
 function initializeYearSelector(){
