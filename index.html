@@ -223,19 +223,13 @@
 
   <section class="card">
     <h2>Investimentos</h2>
-    <small>Valores guardados ou investidos. Servem como ilustração e só entram no Red or Green se você escolher.</small>
+    <small>Valores guardados ou investidos. Entram automaticamente no Red or Green.</small>
     <div class="field"><label>Nome / onde está</label><input type="text" id="invNome" placeholder="Ex. Nubank, poupança, tesouro"></div>
     <div class="field"><label>Valor R$</label><input type="number" id="invValor" step="0.01" placeholder="0,00"></div>
     <div class="field"><label>Tipo</label>
       <select id="invTipo">
         <option value="retirar">Retirar (aplicar dinheiro)</option>
         <option value="adicionar">Adicionar (retirar do investimento)</option>
-      </select>
-    </div>
-    <div class="field"><label>Impacto</label>
-      <select id="invDestino">
-        <option value="nenhum">Apenas ilustrativo</option>
-        <option value="redgreen">Ajustar Red / Green</option>
       </select>
     </div>
     <button class="btn" onclick="addInvestimento()">Salvar investimento</button>
@@ -678,18 +672,14 @@ document.addEventListener('DOMContentLoaded', function(){
       if(elI)elI.textContent=formatCurrency(ti);
       if(elE)elE.textContent=formatCurrency(te);
 
-      const invRog = localInvestimentos
-        .filter(function(i) {
-          return i.destino === 'redgreen';
-        })
-        .reduce(function(acc, i) {
-          const v = Number(i.valor) || 0;
-          if (i.tipo === 'retirar') {
-            return acc - v;
-          } else {
-            return acc + v;
-          }
-        }, 0);
+      const invRog = localInvestimentos.reduce(function(acc, i) {
+        const v = Number(i.valor) || 0;
+        if (i.tipo === 'retirar') {
+          return acc - v;
+        } else {
+          return acc + v;
+        }
+      }, 0);
 
       let rog = ti - te + invRog;
 
@@ -716,11 +706,15 @@ document.addEventListener('DOMContentLoaded', function(){
     const nome=document.getElementById('invNome').value.trim();
     const valor=parseFloat(document.getElementById('invValor').value);
     const tipo=document.getElementById('invTipo').value;
-    const destino=document.getElementById('invDestino').value;
     if(!nome||isNaN(valor)||valor<=0){alert('Preencha os campos.');return;}
     showLoading(true);
     try{
-      const res=await sb.from('investimentos').insert({user_id:USER_ID,nome:nome,valor:valor,tipo:tipo,destino:destino}).select().single();
+      const res=await sb.from('investimentos').insert({
+        user_id:USER_ID,
+        nome:nome,
+        valor:valor,
+        tipo:tipo
+      }).select().single();
       if(res.error) throw res.error;
       localInvestimentos.unshift(res.data);
       document.getElementById('invNome').value='';
@@ -763,11 +757,10 @@ document.addEventListener('DOMContentLoaded', function(){
     localInvestimentos.forEach(inv=>{
       const sinal=inv.tipo==='retirar'?'+':'-';
       const cor=inv.tipo==='retirar'?'var(--green)':'var(--red)';
-      const tag=inv.destino==='redgreen'?'Ajusta Red/Green':'Ilustrativo';
       html+='<div class="mini-item">'+
               '<div class="mini-item-main">'+
                 '<span class="mini-title">'+inv.nome+'</span>'+
-                '<span class="mini-meta" style="color:'+cor+'">'+sinal+' '+formatCurrency(inv.valor)+' • '+tag+'</span>'+
+                '<span class="mini-meta" style="color:'+cor+'">'+sinal+' '+formatCurrency(inv.valor)+'</span>'+
               '</div>'+
               '<div class="mini-actions">'+
                 '<button class="btn btn-sm btn-danger" onclick="deleteInvestimento('+inv.id+')">Excluir</button>'+
@@ -960,20 +953,6 @@ document.addEventListener('DOMContentLoaded', function(){
         if(elATE)elATE.textContent='Total: '+formatCurrency(Object.values(expenseMapAll).reduce((a,b)=>a+b,0));
       }
     }catch(e){console.error('updateAllTimeCharts',e);}
-  }
-
-  function initializeYearSelector(){
-    const yearSelect=document.getElementById('yearSelect');
-    if(!yearSelect)return;
-    const yearNow=new Date().getFullYear();
-    yearSelect.innerHTML='';
-    for(let y=yearNow-2;y<=yearNow+5;y++){
-      const opt=document.createElement('option');
-      opt.value=y;
-      opt.textContent=y;
-      if(y===yearNow)opt.selected=true;
-      yearSelect.appendChild(opt);
-    }
   }
 
   const ms=document.getElementById('monthSelect');
