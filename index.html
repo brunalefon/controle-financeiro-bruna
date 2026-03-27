@@ -656,25 +656,44 @@ document.addEventListener('DOMContentLoaded', function(){
       if(elI)elI.textContent=formatCurrency(ti);
       if(elE)elE.textContent=formatCurrency(te);
 
-      const invRog=localInvestimentos
-        .filter(i=>i.destino==='redgreen')
-        .reduce((a,i)=>a+(i.tipo==='retirar'?Number(i.valor):-Number(i.valor)),0);
+      // NÃO mexe em 'ti' e 'te' aqui em cima
 
-      let rog=ti-te+invRog;
-      const elRog=document.getElementById('redOrGreen');
-      const elRogL=document.getElementById('redOrGreenLabel');
-      if(elRog){
-        elRog.textContent=formatCurrency(Math.abs(rog));
-        elRog.style.color=rog>=0?'#3c57d7':'#e05555';
+      // impacto de investimento APENAS no Red/Green
+      const invRog = localInvestimentos
+        .filter(function(i) {
+          // só os que você marcou para impactar o Red/Green
+          return i.destino === 'redgreen';
+        })
+        .reduce(function(acc, i) {
+          const v = Number(i.valor) || 0;
+
+          if (i.tipo === 'retirar') {
+            // você aplicou dinheiro: Red/Green deve ignorar esse valor (subtrai)
+            return acc - v;
+          } else {
+            // você resgatou dinheiro: Red/Green volta a enxergar esse valor (soma)
+            return acc + v;
+          }
+        }, 0);
+
+      // Red or Green = Receita Final - Despesa Final + impacto da parte "esquecida" nos investimentos
+      let rog = ti - te + invRog;
+
+      const elRog = document.getElementById('redOrGreen');
+      const elRogL = document.getElementById('redOrGreenLabel');
+      if (elRog) {
+        elRog.textContent = formatCurrency(Math.abs(rog));
+        elRog.style.color = rog >= 0 ? '#3c57d7' : '#e05555';
       }
-      if(elRogL){
-        elRogL.textContent=rog>=0
-          ? 'No verde! Lucro de '+formatCurrency(rog)
-          : 'No vermelho! Faltam '+formatCurrency(Math.abs(rog));
+      if (elRogL) {
+        elRogL.textContent = rog >= 0
+          ? 'No verde! Lucro de ' + formatCurrency(rog)
+          : 'No vermelho! Faltam ' + formatCurrency(Math.abs(rog));
       }
 
-      const elT=document.getElementById('summaryTotal');
-      if(elT)elT.textContent=formatCurrency(ti-te);
+      // Saldo Total continua sendo todo o dinheiro, sem “esquecer” investimento
+      const elT = document.getElementById('summaryTotal');
+      if (elT) elT.textContent = formatCurrency(ti - te);
 
       updateAllTimeCharts();
     }catch(e){console.error('computeAllTimeTotal',e);}
