@@ -9,6 +9,11 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
 :root{--bg-body:#f5f7fb;--bg-card:#ffffff;--bg-soft:#f1f4ff;--accent:#7897ff;--accent-soft:#dde4ff;--accent-strong:#3c57d7;--text-main:#1f2933;--text-muted:#6b7280;--border-soft:#e0e4f0;--green:#34a853;--red:#e15b56}*{box-sizing:border-box;margin:0;padding:0}body{font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg-body);color:var(--text-main);padding:24px}.page{max-width:1080px;margin:0 auto 48px}header{margin-bottom:24px}header h1{font-size:1.9rem;font-weight:700;margin-bottom:4px}header p{font-size:.95rem;color:var(--text-muted)}.pill-row{display:flex;flex-wrap:wrap;gap:8px;margin:4px 0 16px}.pill{padding:4px 10px;border-radius:999px;font-size:.78rem;background:var(--bg-soft);color:var(--text-muted)}.card{background:var(--bg-card);border-radius:12px;border:1px solid var(--border-soft);padding:16px 16px 14px;margin-bottom:16px}.card h2{font-size:1.1rem;margin-bottom:4px}.card small{display:block;font-size:.8rem;color:var(--text-muted);margin-bottom:8px}.card-2col{display:grid;grid-template-columns:1fr 1fr;gap:12px}.card-3col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}.big-amount{font-size:1.6rem;font-weight:700;margin:4px 0}.label-muted{font-size:.8rem;color:var(--text-muted)}.highlight-chip{display:inline-flex;align-items:center;gap:4px;font-size:.8rem;padding:2px 8px;border-radius:999px;background:var(--accent-soft);color:var(--accent-strong);margin-top:4px}.period-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}.period-row select,.period-row input[type=number]{border-radius:999px;border:1px solid var(--border-soft);padding:6px 10px;font-size:.85rem;background:#fff}.field{margin-bottom:10px}.field label{display:block;font-size:.8rem;margin-bottom:4px;color:var(--text-muted)}.field input,.field select,.field textarea{width:100%;border-radius:8px;border:1px solid var(--border-soft);padding:8px 10px;font-size:.9rem;background:#fff}.field textarea{min-height:70px;resize:vertical}.field input:focus,.field select:focus,.field textarea:focus{outline:2px solid var(--accent-soft);outline-offset:1px;border-color:var(--accent-strong)}.btn{border-radius:999px;border:none;padding:8px 14px;font-size:.85rem;font-weight:600;background:var(--accent-strong);color:#fff;cursor:pointer}.btn:hover{background:var(--accent)}.btn-ghost{background:var(--bg-soft);color:var(--text-main)}.btn-ghost:hover{background:#e4e7ff}.btn-danger{background:var(--red)}.btn-danger:hover{background:#c54945}.btn-sm{padding:4px 9px;border-radius:999px;font-size:.78rem}.two-cols{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1.1fr);gap:16px}.chart-wrap{display:flex;flex-direction:column;gap:8px}.chart-canvas-wrap{width:100%;height:220px}.chart-row{display:flex;flex-wrap:nowrap;gap:16px}.chart-row div{flex:1 1 50%}.mini-list{margin-top:6px}.mini-item{border-radius:8px;border:1px solid var(--border-soft);padding:6px 8px;font-size:.82rem;display:flex;justify-content:space-between;align-items:center;margin-bottom:4px}.mini-item-main{display:flex;flex-direction:column;gap:1px}.mini-title{font-weight:600}.mini-meta{font-size:.75rem;color:var(--text-muted)}.mini-actions{display:flex;gap:4px;align-items:center;margin-left:8px;flex-shrink:0}.invoice-header-row{display:flex;justify-content:space-between;align-items:baseline;gap:8px}.invoice-name{font-weight:600}.invoice-meta{font-size:.8rem;color:var(--text-muted);margin-top:2px}.months-checklist{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}.month-pill{display:inline-flex;align-items:center;gap:4px;border-radius:999px;padding:3px 8px;background:var(--bg-soft);font-size:.75rem}.month-pill input{margin:0;width:12px;height:12px}.fatura-paga-label{display:flex;align-items:center;gap:8px;margin-top:10px;font-size:.85rem;cursor:pointer;color:var(--text-muted)}.fatura-paga-label input[type=checkbox]{width:16px;height:16px;cursor:pointer;accent-color:var(--accent-strong)}.loading-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(255,255,255,.8);display:flex;align-items:center;justify-content:center;z-index:9999;font-size:1.1rem;color:var(--accent-strong)}.toast{position:fixed;bottom:24px;right:24px;background:var(--accent-strong);color:#fff;padding:10px 18px;border-radius:8px;font-size:.9rem;z-index:9999;opacity:0;transition:opacity .3s}.toast.show{opacity:1}@media(max-width:768px){.two-cols{grid-template-columns:1fr}.card-2col{grid-template-columns:1fr}.card-3col{grid-template-columns:1fr}body{padding:16px}}
+/* scroll nas listinhas de receitas/despesas */
+.mini-list-scroll {
+  max-height: 220px;
+  overflow-y: auto;
+}
 </style>
 </head>
 <body>
@@ -100,7 +105,7 @@
 <div class="field"><label>Valor R$</label><input type="number" id="incomeValue" step="0.01" placeholder="0,00"></div>
 <div class="field"><label>Categoria</label><select id="incomeCategory"><option value="Salário">Salário</option><option value="Comissão">Comissão</option><option value="Pagamentos">Pagamentos</option><option value="Rendimentos/Investimentos">Rendimentos/Investimentos</option><option value="Outros">Outros</option><option value="Vendas">Vendas</option></select></div>
 <button class="btn" onclick="addIncome()">Adicionar receita</button>
-<div class="mini-list" id="incomeHistoryList"><p class="notes">Nenhuma receita.</p></div>
+<div class="mini-list mini-list-scroll" id="incomeHistoryList"><p class="notes">Nenhuma receita.</p></div>
 </div>
 <div>
 <h3 style="margin-bottom:8px">Despesa</h3>
@@ -109,7 +114,7 @@
 <div class="field"><label>Categoria</label><select id="expenseCategory"><option value="Aluguel">Aluguel</option><option value="Supermercado">Supermercado</option><option value="Saúde">Saúde</option><option value="Contas/Assinaturas">Contas/Assinaturas</option><option value="MEI">MEI</option><option value="Comida">Comida</option><option value="Farmácia">Farmácia</option><option value="Lazer">Lazer</option><option value="PC/Programa">PC/Programa</option><option value="Presentes">Presentes</option><option value="Roupas">Roupas</option><option value="Serviços">Serviços</option><option value="Transporte">Transporte</option><option value="Outros">Outros</option></select></div>
 <div class="field"><label>Tipo de Pagamento</label><select id="expensePaymentType"><option value="debito">Débito</option><option value="credito">Crédito</option></select></div>
 <button class="btn" onclick="addExpense()">Adicionar despesa</button>
-<div class="mini-list" id="expenseHistoryList"><p class="notes">Nenhuma despesa.</p></div>
+<div class="mini-list mini-list-scroll" id="expenseHistoryList"><p class="notes">Nenhuma despesa.</p></div>
 </div>
 </div>
 </section>
@@ -368,21 +373,33 @@ async function deleteExpense(id){
   }
 }
 
+// renderIncomeHistory com data 27/03 14:35
 function renderIncomeHistory(){
   const list=document.getElementById('incomeHistoryList');
   if(!list) return;
-  const items=localReceitas.slice(0,5);
+  const items=localReceitas.slice(0,50);
   if(!items.length){
     list.innerHTML='<p class="notes">Nenhuma receita.</p>';
     return;
   }
   let html = '';
   items.forEach(function(item){
+    const data = item.created_at
+      ? new Date(item.created_at).toLocaleString('pt-BR', {
+          day: '2-digit',
+          month: '2-digit',
+          hour: '2-digit',
+          minute: '2-digit'
+        })
+      : '';
     html += '<div class="mini-item">' +
               '<div class="mini-item-main">' +
                 '<span class="mini-title">' + item.titulo + '</span>' +
-                '<span class="mini-meta">' + formatCurrency(item.valor) +
-                ' • ' + item.categoria + '</span>' +
+                '<span class="mini-meta">' +
+                  formatCurrency(item.valor) +
+                  ' • ' + item.categoria +
+                  (data ? ' • ' + data : '') +
+                '</span>' +
               '</div>' +
               '<div class="mini-actions">' +
                 '<button class="btn btn-sm btn-danger" onclick="deleteIncome(' + item.id + ')">Excluir</button>' +
@@ -392,22 +409,34 @@ function renderIncomeHistory(){
   list.innerHTML = html;
 }
 
+// renderExpenseHistory com data 27/03 14:35
 function renderExpenseHistory(){
   const list=document.getElementById('expenseHistoryList');
   if(!list) return;
-  const items=localDespesas.slice(0,5);
+  const items=localDespesas.slice(0,50);
   if(!items.length){
     list.innerHTML='<p class="notes">Nenhuma despesa.</p>';
     return;
   }
   let html = '';
   items.forEach(function(item){
+    const data = item.created_at
+      ? new Date(item.created_at).toLocaleString('pt-BR', {
+          day: '2-digit',
+          month: '2-digit',
+          hour: '2-digit',
+          minute: '2-digit'
+        })
+      : '';
     html += '<div class="mini-item">' +
               '<div class="mini-item-main">' +
                 '<span class="mini-title">' + item.titulo + '</span>' +
-                '<span class="mini-meta">' + formatCurrency(item.valor) +
-                ' • ' + item.categoria +
-                ' • ' + (item.tipo_pagamento||'débito') + '</span>' +
+                '<span class="mini-meta">' +
+                  formatCurrency(item.valor) +
+                  ' • ' + item.categoria +
+                  ' • ' + (item.tipo_pagamento||'débito') +
+                  (data ? ' • ' + data : '') +
+                '</span>' +
               '</div>' +
               '<div class="mini-actions">' +
                 '<button class="btn btn-sm btn-danger" onclick="deleteExpense(' + item.id + ')">Excluir</button>' +
@@ -542,15 +571,12 @@ async function computeAllTimeTotal(){
     const recs = recsRes.data || [];
     const desps = despsRes.data || [];
 
-    // todas as receitas sempre entram
     const ti = recs.reduce(function(a,r){return a+Number(r.valor);},0);
 
-    // débito de todos os meses entra sempre
     const teDebito2 = desps
       .filter(function(d){return !d.tipo_pagamento || d.tipo_pagamento==='debito';})
       .reduce(function(a,d){return a+Number(d.valor);},0);
 
-    // crédito dos meses anteriores SEMPRE entra
     const teCreditoPassado = desps
       .filter(function(d){
         return d.tipo_pagamento==='credito' &&
@@ -559,7 +585,6 @@ async function computeAllTimeTotal(){
       })
       .reduce(function(a,d){return a+Number(d.valor);},0);
 
-    // crédito do mês atual só entra se o checkbox deste mês estiver marcado
     const teCreditoMesAtual = desps
       .filter(function(d){
         return d.tipo_pagamento==='credito' &&
