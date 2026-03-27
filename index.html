@@ -136,7 +136,12 @@
 <small>Valores guardados ou investidos. Escolha se devem contar no Saldo Total ou apenas no Red or Green?</small>
 <div class="field"><label>Nome / onde está</label><input type="text" id="invNome" placeholder="Ex. Nubank, poupança, tesouro"></div>
 <div class="field"><label>Valor R$</label><input type="number" id="invValor" step="0.01" placeholder="0,00"></div>
-<div class="field"><label>Tipo</label><select id="invTipo"><option value="adicionar">Adicionar (+)</option><option value="retirar">Retirar (-)</option></select></div>
+<div class="field"><label>Tipo</label>
+  <select id="invTipo">
+    <option value="retirar">Retirar (aplicar dinheiro)</option>
+    <option value="adicionar">Adicionar (retirar do investimento)</option>
+  </select>
+</div>
 <div class="field"><label>Contar em</label><select id="invDestino"><option value="saldo">Saldo Total</option><option value="redgreen">Red / Green</option></select></div>
 <button class="btn" onclick="addInvestimento()">Salvar investimento</button>
 <div id="invList" class="mini-list" style="margin-top:8px"><p class="notes">Nenhum investimento.</p></div>
@@ -604,10 +609,18 @@ async function computeAllTimeTotal(){
     if(elI) elI.textContent=formatCurrency(ti);
     if(elE) elE.textContent=formatCurrency(te);
 
-    const invSaldo=localInvestimentos.filter(function(i){return i.destino==='saldo';})
-      .reduce(function(a,i){return a+(i.tipo==='adicionar'?Number(i.valor):-Number(i.valor));},0);
-    const invRog=localInvestimentos.filter(function(i){return i.destino==='redgreen';})
-      .reduce(function(a,i){return a+(i.tipo==='adicionar'?Number(i.valor):-Number(i.valor));},0);
+    // NOVA LÓGICA: "retirar" = +, "adicionar" = -
+    const invSaldo=localInvestimentos
+      .filter(function(i){return i.destino==='saldo';})
+      .reduce(function(a,i){
+        return a + (i.tipo === 'retirar' ? Number(i.valor) : -Number(i.valor));
+      },0);
+
+    const invRog=localInvestimentos
+      .filter(function(i){return i.destino==='redgreen';})
+      .reduce(function(a,i){
+        return a + (i.tipo === 'retirar' ? Number(i.valor) : -Number(i.valor));
+      },0);
 
     let rog=ti-te+invRog;
     const elRog=document.getElementById('redOrGreen');
@@ -664,13 +677,13 @@ async function deleteInvestimento(id){
   }
 }
 
-// calcula total investido (tipo "adicionar") e atualiza label
+// calcula total investido (somente "retirar" = aplicação)
 function updateInvestTotalLabel() {
   const el = document.getElementById('invTotalLabel');
   if (!el) return;
 
   const totalInvest = localInvestimentos
-    .filter(function(i){ return i.tipo === 'adicionar'; })
+    .filter(function(i){ return i.tipo === 'retirar'; })
     .reduce(function(acc, i){ return acc + Number(i.valor || 0); }, 0);
 
   el.textContent = 'Total investido: ' + formatCurrency(totalInvest);
@@ -686,8 +699,9 @@ function renderInvestimentos(){
   }
   let html='';
   localInvestimentos.forEach(function(inv){
-    const sinal=inv.tipo==='adicionar'?'+':'-';
-    const cor=inv.tipo==='adicionar'?'var(--green)':'var(--red)';
+    // "retirar" = aplicando (positivo), "adicionar" = retirando (negativo)
+    const sinal=inv.tipo==='retirar'?'+':'-';
+    const cor=inv.tipo==='retirar'?'var(--green)':'var(--red)';
     const tag=inv.destino==='saldo'?'Saldo Total':'Red/Green';
     html += '<div class="mini-item">' +
               '<div class="mini-item-main">' +
