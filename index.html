@@ -245,6 +245,24 @@
     </p>
   </section>
 
+  <section class="card">
+    <h2>Dinheiro Guardado</h2>
+    <small>Valores guardados no banco. Servem como ilustração e não entram no Red or Green.</small>
+    <div class="field"><label>Nome / onde está</label><input type="text" id="savedNome" placeholder="Ex. Nubank, poupança, banco"></div>
+    <div class="field"><label>Valor R$</label><input type="number" id="savedValor" step="0.01" placeholder="0,00"></div>
+    <div class="field"><label>Tipo</label>
+      <select id="savedTipo">
+        <option value="retirar">Retirar (guardar dinheiro)</option>
+        <option value="adicionar">Adicionar (retirar do guardado)</option>
+      </select>
+    </div>
+    <button class="btn" onclick="addDinheiroGuardado()">Salvar dinheiro guardado</button>
+    <div id="savedList" class="mini-list" style="margin-top:8px"><p class="notes">Nenhum dinheiro guardado.</p></div>
+    <p id="savedTotalLabel" class="label-muted" style="margin-top:6px">
+      Total guardado: R$ 0,00
+    </p>
+  </section>
+
   <div class="card-2col">
     <div class="card">
       <h2>Receita Final</h2>
@@ -308,6 +326,7 @@ document.addEventListener('DOMContentLoaded', function(){
   let localDespesas=[];
   let localFaturas=[];
   let localInvestimentos=[];
+  let localDinheiroGuardado=[];
 
   let creditPaid=false;
 
@@ -362,16 +381,19 @@ document.addEventListener('DOMContentLoaded', function(){
       const dQuery=sb.from('despesas').select('*').eq('user_id',USER_ID).eq('mes',currentMonth).eq('ano',currentYear).order('created_at',{ascending:false});
       const fQuery=sb.from('faturas').select('*').eq('user_id',USER_ID).order('created_at',{ascending:false});
       const iQuery=sb.from('investimentos').select('*').eq('user_id',USER_ID).order('created_at',{ascending:false});
-      const [rRes,dRes,fRes,iRes]=await Promise.all([rQuery,dQuery,fQuery,iQuery]);
-      if(rRes.error||dRes.error||fRes.error||iRes.error){
-        console.error(rRes.error||dRes.error||fRes.error||iRes.error);
+      const dgQuery=sb.from('dinheiro_guardado').select('*').eq('user_id',USER_ID).order('created_at',{ascending:false});
+      const [rRes,dRes,fRes,iRes,dgRes]=await Promise.all([rQuery,dQuery,fQuery,iQuery,dgQuery]);
+      if(rRes.error||dRes.error||fRes.error||iRes.error||dgRes.error){
+        console.error(rRes.error||dRes.error||fRes.error||iRes.error||dgRes.error);
         showToast('Erro ao carregar dados.');
       }
       localReceitas=rRes.data||[];
       localDespesas=dRes.data||[];
       localFaturas=fRes.data||[];
       localInvestimentos=iRes.data||[];
+      localDinheiroGuardado=dgRes.data||[];
       renderInvestimentos();
+      renderDinheiroGuardado();
       computeAllTimeTotal();
       updateAll();
     }catch(e){
@@ -656,27 +678,19 @@ document.addEventListener('DOMContentLoaded', function(){
       if(elI)elI.textContent=formatCurrency(ti);
       if(elE)elE.textContent=formatCurrency(te);
 
-      // NÃO mexe em 'ti' e 'te' aqui em cima
-
-      // impacto de investimento APENAS no Red/Green
       const invRog = localInvestimentos
         .filter(function(i) {
-          // só os que você marcou para impactar o Red/Green
           return i.destino === 'redgreen';
         })
         .reduce(function(acc, i) {
           const v = Number(i.valor) || 0;
-
           if (i.tipo === 'retirar') {
-            // você aplicou dinheiro: Red/Green deve ignorar esse valor (subtrai)
             return acc - v;
           } else {
-            // você resgatou dinheiro: Red/Green volta a enxergar esse valor (soma)
             return acc + v;
           }
         }, 0);
 
-      // Red or Green = Receita Final - Despesa Final + impacto da parte "esquecida" nos investimentos
       let rog = ti - te + invRog;
 
       const elRog = document.getElementById('redOrGreen');
@@ -691,7 +705,6 @@ document.addEventListener('DOMContentLoaded', function(){
           : 'No vermelho! Faltam ' + formatCurrency(Math.abs(rog));
       }
 
-      // Saldo Total continua sendo todo o dinheiro, sem “esquecer” investimento
       const elT = document.getElementById('summaryTotal');
       if (elT) elT.textContent = formatCurrency(ti - te);
 
@@ -763,6 +776,69 @@ document.addEventListener('DOMContentLoaded', function(){
     });
     container.innerHTML=html;
     updateInvestTotalLabel();
+  }
+
+  window.addDinheiroGuardado=async function(){
+    const nome=document.getElementById('savedNome').value.trim();
+    const valor=parseFloat(document.getElementById('savedValor').value);
+    const tipo=document.getElementById('savedTipo').value;
+    if(!nome||isNaN(valor)||valor<=0){alert('Preencha os campos.');return;}
+    showLoading(true);
+    try{
+      const res=await sb.from('dinheiro_guardado').insert({user_id:USER_ID,nome:nome,valor:valor,tipo:tipo}).select().single();
+      if(res.error) throw res.error;
+      localDinheiroGuardado.unshift(res.data);
+      document.getElementById('savedNome').value='';
+      document.getElementById('savedValor').value='';
+      renderDinheiroGuardado();
+      showToast('Dinheiro guardado salvo!');
+    }catch(e){showToast('Erro ao salvar.');}finally{showLoading(false);}
+  };
+
+  window.deleteDinheiroGuardado=async function(id){
+    if(!confirm('Excluir?'))return;
+    showLoading(true);
+    try{
+      await sb.from('dinheiro_guardado').delete().eq('id',id);
+      localDinheiroGuardado=localDinheiroGuardado.filter(i=>i.id!==id);
+      renderDinheiroGuardado();
+    }finally{showLoading(false);}
+  };
+
+  function updateDinheiroGuardadoTotalLabel(){
+    const el=document.getElementById('savedTotalLabel');
+    if(!el)return;
+    const totalGuardado=localDinheiroGuardado
+      .filter(i=>i.tipo==='retirar')
+      .reduce((acc,i)=>acc+Number(i.valor||0),0);
+    el.textContent='Total guardado: '+formatCurrency(totalGuardado);
+  }
+
+  function renderDinheiroGuardado(){
+    const container=document.getElementById('savedList');
+    if(!container)return;
+    if(!localDinheiroGuardado.length){
+      container.innerHTML='<p class="notes">Nenhum dinheiro guardado.</p>';
+      updateDinheiroGuardadoTotalLabel();
+      return;
+    }
+    let html='';
+    localDinheiroGuardado.forEach(item=>{
+      const sinal=item.tipo==='retirar'?'+':'-';
+      const cor=item.tipo==='retirar'?'var(--green)':'var(--red)';
+      const tag='Não entra no Red/Green';
+      html+='<div class="mini-item">'+
+              '<div class="mini-item-main">'+
+                '<span class="mini-title">'+item.nome+'</span>'+
+                '<span class="mini-meta" style="color:'+cor+'">'+sinal+' '+formatCurrency(item.valor)+' • '+tag+'</span>'+
+              '</div>'+
+              '<div class="mini-actions">'+
+                '<button class="btn btn-sm btn-danger" onclick="deleteDinheiroGuardado('+item.id+')">Excluir</button>'+
+              '</div>'+
+            '</div>';
+    });
+    container.innerHTML=html;
+    updateDinheiroGuardadoTotalLabel();
   }
 
   function initializeYearSelector(){
