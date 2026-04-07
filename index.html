@@ -725,6 +725,45 @@ document.addEventListener('DOMContentLoaded', function(){
     }catch(e){showToast('Erro ao salvar.');}finally{showLoading(false);}
   };
 
+  window.addInvestimento = async function(){
+  const nome  = document.getElementById('invNome').value.trim();
+  const valor = parseFloat(document.getElementById('invValor').value);
+  const tipo  = document.getElementById('invTipo').value; // 'retirar' ou 'adicionar'
+
+  if (!nome || isNaN(valor) || valor <= 0) {
+    alert('Preencha os campos.');
+    return;
+  }
+
+  // destino padrão, compatível com o CHECK da tabela
+  const destino = 'redgreen'; // se quiser trocar depois pra 'saldo', é só mudar aqui
+
+  showLoading(true);
+  try{
+    const res = await sb.from('investimentos').insert({
+      user_id: USER_ID,
+      nome: nome,
+      valor: valor,
+      tipo: tipo,
+      destino: destino
+    }).select().single();
+
+    if (res.error) throw res.error;
+
+    localInvestimentos.unshift(res.data);
+    document.getElementById('invNome').value  = '';
+    document.getElementById('invValor').value = '';
+    renderInvestimentos();
+    computeAllTimeTotal();
+    showToast('Investimento salvo!');
+  }catch(e){
+    console.error(e);
+    showToast('Erro ao salvar.');
+  }finally{
+    showLoading(false);
+  }
+};
+
   window.deleteInvestimento=async function(id){
     if(!confirm('Excluir?'))return;
     showLoading(true);
