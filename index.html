@@ -786,22 +786,43 @@ document.addEventListener('DOMContentLoaded', function(){
     updateInvestTotalLabel();
   }
 
-  window.addDinheiroGuardado=async function(){
-    const nome=document.getElementById('savedNome').value.trim();
-    const valor=parseFloat(document.getElementById('savedValor').value);
-    const tipo=document.getElementById('savedTipo').value;
-    if(!nome||isNaN(valor)||valor<=0){alert('Preencha os campos.');return;}
-    showLoading(true);
-    try{
-      const res=await sb.from('dinheiro_guardado').insert({user_id:USER_ID,nome:nome,valor:valor,tipo:tipo}).select().single();
-      if(res.error) throw res.error;
-      localDinheiroGuardado.unshift(res.data);
-      document.getElementById('savedNome').value='';
-      document.getElementById('savedValor').value='';
-      renderDinheiroGuardado();
-      showToast('Dinheiro guardado salvo!');
-    }catch(e){showToast('Erro ao salvar.');}finally{showLoading(false);}
-  };
+  window.addDinheiroGuardado = async function(){
+  const nome  = document.getElementById('savedNome').value.trim();
+  const valor = parseFloat(document.getElementById('savedValor').value);
+  const tipo  = document.getElementById('savedTipo').value;
+
+  if (!nome || isNaN(valor) || valor <= 0) {
+    alert('Preencha os campos.');
+    return;
+  }
+
+  // destino padrão para dinheiro guardado: normalmente não entra no Red/Green
+  const destino = 'saldo'; // ou 'redgreen', mas pela sua descrição faz sentido 'saldo'
+
+  showLoading(true);
+  try{
+    const res = await sb.from('dinheiro_guardado').insert({
+      user_id: USER_ID,
+      nome: nome,
+      valor: valor,
+      tipo: tipo,
+      destino: destino
+    }).select().single();
+
+    if (res.error) throw res.error;
+
+    localDinheiroGuardado.unshift(res.data);
+    document.getElementById('savedNome').value  = '';
+    document.getElementById('savedValor').value = '';
+    renderDinheiroGuardado();
+    showToast('Dinheiro guardado salvo!');
+  }catch(e){
+    console.error(e);
+    showToast('Erro ao salvar.');
+  }finally{
+    showLoading(false);
+  }
+};
 
   window.deleteDinheiroGuardado=async function(id){
     if(!confirm('Excluir?'))return;
