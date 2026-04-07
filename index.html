@@ -261,7 +261,7 @@
 
       <div class="card">
         <h2>Red or Green?</h2>
-        <small>Receita Final menos Despesa Final: no lucro ou no vermelho?</small>
+        <small>Saldo disponível em conta hoje.</small>
         <div class="big-amount" id="redOrGreen">R$ 0,00</div>
         <div class="label-muted" id="redOrGreenLabel">Calculando...</div>
       </div>
@@ -429,7 +429,7 @@
 
     <section class="card">
       <h2>Investimentos</h2>
-      <small>Valores guardados ou investidos. Entram automaticamente no Red or Green.</small>
+      <small>Valores investidos. Reduzem o saldo disponível quando você aplica.</small>
 
       <div class="field">
         <label>Nome / onde está</label>
@@ -458,7 +458,7 @@
 
     <section class="card">
       <h2>Dinheiro Guardado</h2>
-      <small>Valores guardados no banco. Entram no Red or Green, mas não no saldo total.</small>
+      <small>Valores guardados no banco. Também reduzem o saldo disponível.</small>
 
       <div class="field">
         <label>Nome / onde está</label>
@@ -509,7 +509,7 @@
 
       <div class="card">
         <h2>Saldo Total</h2>
-        <small>Receitas menos despesas de todos os meses (sem investimento nem guardado).</small>
+        <small>Receitas menos despesas de todos os meses (histórico geral).</small>
         <div class="big-amount" id="summaryTotal">R$ 0,00</div>
       </div>
     </div>
@@ -540,7 +540,6 @@
     </section>
   </div>
 
-  <!-- SCRIPT COMPLETO -->
   <script>
   document.addEventListener('DOMContentLoaded', function(){
     const SUPABASE_URL = 'https://yjmbgtknwfcvntiqngxd.supabase.co';
@@ -1139,25 +1138,17 @@
         if (elI) elI.textContent = formatCurrency(ti);
         if (elE) elE.textContent = formatCurrency(te);
 
-        const invRog = localInvestimentos.reduce(function(acc, i){
-          const v = Number(i.valor) || 0;
-          if (i.tipo === 'retirar'){   // aplicar investimento
-            return acc - v;            // tira do Red/Green
-          }else{                       // resgatar
-            return acc + v;            // volta pro Red/Green
-          }
-        }, 0);
+        // total investido (aplicações) e total guardado
+        const investidoTotal = localInvestimentos
+          .filter(i => i.tipo === 'retirar')
+          .reduce((acc, i) => acc + (Number(i.valor) || 0), 0);
 
-        const savedRog = localDinheiroGuardado.reduce(function(acc, i){
-          const v = Number(i.valor) || 0;
-          if (i.tipo === 'retirar'){   // guardar dinheiro
-            return acc - v;            // tira do Red/Green
-          }else{                       // tirar do guardado
-            return acc + v;            // volta pro Red/Green
-          }
-        }, 0);
+        const guardadoTotal = localDinheiroGuardado
+          .filter(i => i.tipo === 'retirar')
+          .reduce((acc, i) => acc + (Number(i.valor) || 0), 0);
 
-        let rog = ti - te + invRog + savedRog;
+        // saldo disponível em conta hoje
+        let rog = ti - te - investidoTotal - guardadoTotal;
 
         const elRog  = document.getElementById('redOrGreen');
         const elRogL = document.getElementById('redOrGreenLabel');
@@ -1169,7 +1160,7 @@
 
         if (elRogL){
           elRogL.textContent = rog >= 0
-            ? 'No verde! Lucro de ' + formatCurrency(rog)
+            ? 'No verde! Saldo de ' + formatCurrency(rog)
             : 'No vermelho! Faltam ' + formatCurrency(Math.abs(rog));
         }
 
@@ -1349,7 +1340,7 @@
       localDinheiroGuardado.forEach(item => {
         const sinal = item.tipo === 'retirar' ? '+' : '-';
         const cor   = item.tipo === 'retirar' ? 'var(--green)' : 'var(--red)';
-        const tag   = 'Entra no Red/Green';
+        const tag   = 'Impacta saldo disponível';
         html +=
           '<div class="mini-item">' +
             '<div class="mini-item-main">' +
