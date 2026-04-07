@@ -336,6 +336,16 @@ document.addEventListener('DOMContentLoaded', function(){
     creditPaid=cb.checked;
     localStorage.setItem(getCreditPaidKey(),creditPaid?'true':'false');
     computeAllTimeTotal();
+    const savedRog = localDinheiroGuardado.reduce(function(acc, i) {
+  const v = Number(i.valor) || 0;
+  if (i.tipo === 'retirar') { // guardar dinheiro
+    return acc - v;          // tira do Red/Green
+  } else {                   // 'adicionar' = tirar do guardado
+    return acc + v;          // devolve pro Red/Green
+  }
+}, 0);
+
+let rog = ti - te + invRog + savedRog;
   };
 
   function showLoading(v){const el=document.getElementById('loadingOverlay');if(el)el.style.display=v?'flex':'none';}
