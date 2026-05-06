@@ -1,17 +1,16 @@
-name: Manter Supabase Ativo
+name: Keep Supabase Alive
 
 on:
   schedule:
-    # Roda todos os dias às 05:00 da manhã (horário UTC)
-    - cron: '0 5 * * *'
-  workflow_dispatch: # Permite que você teste clicando em um botão
+    - cron: '0 8 * * *' # roda todo dia
+  workflow_dispatch:
 
 jobs:
-  ping_supabase:
+  ping:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Enviando sinal de atividade para o Supabase
+      - name: Ping Supabase
         run: |
-          curl -i -X GET "${{ secrets.SUPABASE_URL }}/rest/v1/" \
-          -H "apikey: ${{ secrets.SUPABASE_KEY }}" \
-          -H "Authorization: Bearer ${{ secrets.SUPABASE_KEY }}"
+          curl '${{ secrets.SUPABASE_URL }}/rest/v1/faturas?select=*&limit=1' \
+          -H "apikey: ${{ secrets.SUPABASE_KEY }}"
