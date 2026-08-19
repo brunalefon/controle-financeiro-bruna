@@ -226,10 +226,11 @@
 
 /* Lista de categorias dos gráficos */
 .category-list-scroll{
-  max-height:180px;
+  max-height:220px;
   overflow-y:auto;
   margin-top:8px;
   padding-right:4px;
+  border-top:1px solid var(--border-soft);
 }
 
 .category-list-scroll::-webkit-scrollbar{
@@ -241,11 +242,31 @@
   border-radius:999px;
 }
 
-.category-item{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
+.category-list-header{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) 72px 105px;
   gap:10px;
+  align-items:center;
+  padding:7px 8px 6px;
+  font-size:.72rem;
+  color:var(--text-muted);
+  font-weight:600;
+  position:sticky;
+  top:0;
+  background:#fff;
+  z-index:2;
+}
+
+.category-list-header span:nth-child(2),
+.category-list-header span:nth-child(3){
+  text-align:right;
+}
+
+.category-item{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) 72px 105px;
+  gap:10px;
+  align-items:center;
   padding:7px 8px;
   border:1px solid var(--border-soft);
   border-radius:8px;
@@ -275,9 +296,25 @@
 }
 
 .category-percent{
+  font-weight:600;
+  color:var(--text-main);
+  text-align:right;
+  white-space:nowrap;
+}
+
+.category-value{
   font-weight:700;
   color:var(--text-main);
-  flex-shrink:0;
+  text-align:right;
+  white-space:nowrap;
+}
+
+@media(max-width:768px){
+  .category-list-header,
+  .category-item{
+    grid-template-columns:minmax(0,1fr) 58px 92px;
+    gap:6px;
+  }
 }
 
   </style>
@@ -786,22 +823,45 @@ function renderCategoryList(containerId, labels, values, colors){
 
       const total = values.reduce((sum, value) => sum + Number(value), 0);
 
-      const items = labels.map((categoria, index) => ({
-        categoria,
-        valor: Number(values[index]) || 0,
-        percentual: total ? ((Number(values[index]) || 0) / total) * 100 : 0,
-        color: colors[index] || 'var(--accent)'
-      }));
+      const items = labels.map((categoria, index) => {
+        const valor = Number(values[index]) || 0;
+        const percentual = total ? (valor / total) * 100 : 0;
 
-      container.innerHTML = items.map(item => `
-        <div class="category-item">
-          <div class="category-item-left">
-            <span class="category-dot" style="background:${item.color}"></span>
-            <span class="category-name">${item.categoria}</span>
-          </div>
-          <span class="category-percent">${item.percentual.toFixed(0)}%</span>
+        return {
+          categoria,
+          valor,
+          percentual,
+          color: colors[index] || 'var(--accent)'
+        };
+      });
+
+      container.innerHTML = `
+        <div class="category-list-header">
+          <span>Categoria</span>
+          <span>%</span>
+          <span>Valor</span>
         </div>
-      `).join('');
+        ${items.map(item => {
+          const pct = Number.isInteger(item.percentual)
+            ? item.percentual.toFixed(0)
+            : item.percentual.toFixed(1);
+
+          return `
+            <div class="category-item">
+              <div class="category-item-left">
+                <span class="category-dot" style="background:${item.color}"></span>
+                <span class="category-name">${item.categoria}</span>
+              </div>
+
+              <span class="category-percent">${pct}%</span>
+
+              <span class="category-value">
+                ${formatCurrency(item.valor)}
+              </span>
+            </div>
+          `;
+        }).join('')}
+      `;
     }
 
     function updateCharts(){
