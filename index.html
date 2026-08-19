@@ -223,6 +223,63 @@
       body{padding:16px}
     }
     .mini-list-scroll{max-height:220px;overflow-y:auto}
+
+/* Lista de categorias dos gráficos */
+.category-list-scroll{
+  max-height:180px;
+  overflow-y:auto;
+  margin-top:8px;
+  padding-right:4px;
+}
+
+.category-list-scroll::-webkit-scrollbar{
+  width:6px;
+}
+
+.category-list-scroll::-webkit-scrollbar-thumb{
+  background:var(--border-soft);
+  border-radius:999px;
+}
+
+.category-item{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  padding:7px 8px;
+  border:1px solid var(--border-soft);
+  border-radius:8px;
+  margin-bottom:5px;
+  font-size:.82rem;
+  background:#fff;
+}
+
+.category-item-left{
+  display:flex;
+  align-items:center;
+  gap:7px;
+  min-width:0;
+}
+
+.category-dot{
+  width:9px;
+  height:9px;
+  border-radius:50%;
+  flex-shrink:0;
+}
+
+.category-name{
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+
+.category-percent{
+  font-weight:700;
+  color:var(--text-main);
+  flex-shrink:0;
+}
+
   </style>
 </head>
 
@@ -713,7 +770,43 @@
       renderInvoices();
     }
 
-    function updateCharts(){
+    
+function renderCategoryList(containerId, categoryMap, chart){
+  const container = document.getElementById(containerId);
+  if (!container) return;
+
+  const entries = Object.entries(categoryMap);
+
+  if (!entries.length){
+    container.innerHTML = '<p class="label-muted">Nenhuma categoria.</p>';
+    return;
+  }
+
+  const total = entries.reduce((sum, [, value]) => sum + Number(value), 0);
+
+  const colors = chart?.data?.datasets?.[0]?.backgroundColor || [];
+
+  const sorted = entries
+    .map(([categoria, valor], index) => ({
+      categoria,
+      valor: Number(valor),
+      percentual: total ? (Number(valor) / total) * 100 : 0,
+      color: colors[index % colors.length] || 'var(--accent)'
+    }))
+    .sort((a, b) => b.percentual - a.percentual);
+
+  container.innerHTML = sorted.map(item => `
+    <div class="category-item">
+      <div class="category-item-left">
+        <span class="category-dot" style="background:${item.color}"></span>
+        <span class="category-name">${item.categoria}</span>
+      </div>
+      <span class="category-percent">${item.percentual.toFixed(0)}%</span>
+    </div>
+  `).join('');
+}
+
+function updateCharts(){
       const incomeMap  = {};
       const expenseMap = {};
 
@@ -1504,8 +1597,13 @@
         });
 
         if (allTimeIncomeChart){
-          allTimeIncomeChart.data.labels = Object.keys(incomeMapAll);
-          allTimeIncomeChart.data.datasets[0].data = Object.values(incomeMapAll);
+          const sortedIncomeAll = Object.entries(incomeMapAll)
+            .sort((a, b) => b[1] - a[1]);
+
+          allTimeIncomeChart.data.labels =
+            sortedIncomeAll.map(([categoria]) => categoria);
+          allTimeIncomeChart.data.datasets[0].data =
+            sortedIncomeAll.map(([, valor]) => valor);
           allTimeIncomeChart.update();
           const elATI = document.getElementById('allTimeIncomeTotal');
           if (elATI)
@@ -1515,8 +1613,13 @@
         }
 
         if (allTimeExpenseChart){
-          allTimeExpenseChart.data.labels = Object.keys(expenseMapAll);
-          allTimeExpenseChart.data.datasets[0].data = Object.values(expenseMapAll);
+          const sortedExpenseAll = Object.entries(expenseMapAll)
+            .sort((a, b) => b[1] - a[1]);
+
+          allTimeExpenseChart.data.labels =
+            sortedExpenseAll.map(([categoria]) => categoria);
+          allTimeExpenseChart.data.datasets[0].data =
+            sortedExpenseAll.map(([, valor]) => valor);
           allTimeExpenseChart.update();
           const elATE = document.getElementById('allTimeExpenseTotal');
           if (elATE)
