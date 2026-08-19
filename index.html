@@ -362,6 +362,7 @@
           <div class="chart-canvas-wrap">
             <canvas id="incomeChart"></canvas>
           </div>
+          <div class="category-list-scroll" id="incomeCategoryList"></div>
           <p class="label-muted">Total de receitas no mês</p>
           <div class="big-amount" id="totalIncome" style="font-size:1.2rem">R$ 0,00</div>
         </div>
@@ -371,6 +372,7 @@
           <div class="chart-canvas-wrap">
             <canvas id="expenseChart"></canvas>
           </div>
+          <div class="category-list-scroll" id="expenseCategoryList"></div>
           <p class="label-muted">Total de despesas no mês</p>
           <div class="big-amount" id="totalExpense" style="font-size:1.2rem">R$ 0,00</div>
         </div>
@@ -582,6 +584,7 @@
           <div class="chart-canvas-wrap">
             <canvas id="allTimeIncomeChart"></canvas>
           </div>
+          <div class="category-list-scroll" id="allTimeIncomeCategoryList"></div>
           <p id="allTimeIncomeTotal" class="label-muted"></p>
         </div>
 
@@ -591,6 +594,7 @@
           <div class="chart-canvas-wrap">
             <canvas id="allTimeExpenseChart"></canvas>
           </div>
+          <div class="category-list-scroll" id="allTimeExpenseCategoryList"></div>
           <p id="allTimeExpenseTotal" class="label-muted"></p>
         </div>
       </div>
@@ -662,7 +666,7 @@
       responsive: true,
       maintainAspectRatio: false,
       plugins: {
-        legend: { position: 'bottom' },
+        legend: { display: false },
         datalabels: {
           color: '#ffffff',
           font: { weight: '600', size: 11 },
@@ -771,64 +775,86 @@
     }
 
     
-function renderCategoryList(containerId, categoryMap, chart){
-  const container = document.getElementById(containerId);
-  if (!container) return;
+function renderCategoryList(containerId, labels, values, colors){
+      const container = document.getElementById(containerId);
+      if (!container) return;
 
-  const entries = Object.entries(categoryMap);
+      if (!labels.length){
+        container.innerHTML = '<p class="label-muted">Nenhuma categoria.</p>';
+        return;
+      }
 
-  if (!entries.length){
-    container.innerHTML = '<p class="label-muted">Nenhuma categoria.</p>';
-    return;
-  }
+      const total = values.reduce((sum, value) => sum + Number(value), 0);
 
-  const total = entries.reduce((sum, [, value]) => sum + Number(value), 0);
+      const items = labels.map((categoria, index) => ({
+        categoria,
+        valor: Number(values[index]) || 0,
+        percentual: total ? ((Number(values[index]) || 0) / total) * 100 : 0,
+        color: colors[index] || 'var(--accent)'
+      }));
 
-  const colors = chart?.data?.datasets?.[0]?.backgroundColor || [];
+      container.innerHTML = items.map(item => `
+        <div class="category-item">
+          <div class="category-item-left">
+            <span class="category-dot" style="background:${item.color}"></span>
+            <span class="category-name">${item.categoria}</span>
+          </div>
+          <span class="category-percent">${item.percentual.toFixed(0)}%</span>
+        </div>
+      `).join('');
+    }
 
-  const sorted = entries
-    .map(([categoria, valor], index) => ({
-      categoria,
-      valor: Number(valor),
-      percentual: total ? (Number(valor) / total) * 100 : 0,
-      color: colors[index % colors.length] || 'var(--accent)'
-    }))
-    .sort((a, b) => b.percentual - a.percentual);
-
-  container.innerHTML = sorted.map(item => `
-    <div class="category-item">
-      <div class="category-item-left">
-        <span class="category-dot" style="background:${item.color}"></span>
-        <span class="category-name">${item.categoria}</span>
-      </div>
-      <span class="category-percent">${item.percentual.toFixed(0)}%</span>
-    </div>
-  `).join('');
-}
-
-function updateCharts(){
+    function updateCharts(){
       const incomeMap  = {};
       const expenseMap = {};
 
       localReceitas.forEach(r => {
-        incomeMap[r.categoria] = (incomeMap[r.categoria] || 0) + Number(r.valor);
-      });
-      localDespesas.forEach(d => {
-        expenseMap[d.categoria] = (expenseMap[d.categoria] || 0) + Number(d.valor);
+        incomeMap[r.categoria] =
+          (incomeMap[r.categoria] || 0) + Number(r.valor);
       });
 
-      incomeChart.data.labels = Object.keys(incomeMap);
-      incomeChart.data.datasets[0].data = Object.values(incomeMap);
+      localDespesas.forEach(d => {
+        expenseMap[d.categoria] =
+          (expenseMap[d.categoria] || 0) + Number(d.valor);
+      });
+
+      // Ordena da maior porcentagem/valor para a menor.
+      const sortedIncome = Object.entries(incomeMap)
+        .sort((a, b) => b[1] - a[1]);
+
+      const sortedExpense = Object.entries(expenseMap)
+        .sort((a, b) => b[1] - a[1]);
+
+      incomeChart.data.labels =
+        sortedIncome.map(([categoria]) => categoria);
+      incomeChart.data.datasets[0].data =
+        sortedIncome.map(([, valor]) => valor);
       incomeChart.update();
 
-      expenseChart.data.labels = Object.keys(expenseMap);
-      expenseChart.data.datasets[0].data = Object.values(expenseMap);
+      expenseChart.data.labels =
+        sortedExpense.map(([categoria]) => categoria);
+      expenseChart.data.datasets[0].data =
+        sortedExpense.map(([, valor]) => valor);
       expenseChart.update();
 
-      const ti = Object.values(incomeMap).reduce((a,b)=>a+b,0);
-      const te = Object.values(expenseMap).reduce((a,b)=>a+b,0);
+      renderCategoryList(
+        'incomeCategoryList',
+        incomeChart.data.labels,
+        incomeChart.data.datasets[0].data,
+        incomeChart.data.datasets[0].backgroundColor
+      );
 
-      document.getElementById('totalIncome').textContent  = formatCurrency(ti);
+      renderCategoryList(
+        'expenseCategoryList',
+        expenseChart.data.labels,
+        expenseChart.data.datasets[0].data,
+        expenseChart.data.datasets[0].backgroundColor
+      );
+
+      const ti = sortedIncome.reduce((sum, [, valor]) => sum + Number(valor), 0);
+      const te = sortedExpense.reduce((sum, [, valor]) => sum + Number(valor), 0);
+
+      document.getElementById('totalIncome').textContent = formatCurrency(ti);
       document.getElementById('totalExpense').textContent = formatCurrency(te);
     }
 
@@ -1516,8 +1542,7 @@ function updateCharts(){
         maintainAspectRatio: false,
         plugins: {
           legend: {
-            position: 'bottom',
-            labels: { font: { size: 11 } }
+            display: false
           },
           datalabels: {
             color: '#ffffff',
@@ -1552,8 +1577,7 @@ function updateCharts(){
         maintainAspectRatio: false,
         plugins: {
           legend: {
-            position: 'bottom',
-            labels: { font: { size: 11 } }
+            display: false
           },
           datalabels: {
             color: '#ffffff',
@@ -1605,6 +1629,14 @@ function updateCharts(){
           allTimeIncomeChart.data.datasets[0].data =
             sortedIncomeAll.map(([, valor]) => valor);
           allTimeIncomeChart.update();
+
+          renderCategoryList(
+            'allTimeIncomeCategoryList',
+            allTimeIncomeChart.data.labels,
+            allTimeIncomeChart.data.datasets[0].data,
+            allTimeIncomeChart.data.datasets[0].backgroundColor
+          );
+
           const elATI = document.getElementById('allTimeIncomeTotal');
           if (elATI)
             elATI.textContent = 'Total: ' + formatCurrency(
@@ -1621,6 +1653,14 @@ function updateCharts(){
           allTimeExpenseChart.data.datasets[0].data =
             sortedExpenseAll.map(([, valor]) => valor);
           allTimeExpenseChart.update();
+
+          renderCategoryList(
+            'allTimeExpenseCategoryList',
+            allTimeExpenseChart.data.labels,
+            allTimeExpenseChart.data.datasets[0].data,
+            allTimeExpenseChart.data.datasets[0].backgroundColor
+          );
+
           const elATE = document.getElementById('allTimeExpenseTotal');
           if (elATE)
             elATE.textContent = 'Total: ' + formatCurrency(
